@@ -1,17 +1,32 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
-import Login from './components/Login';
-import CreateAccount from './components/CreateAccount';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import Login from './screens/Login';
+import CreateAccount from './screens/SignUp';
+import MainMenu from './screens/MainMenu';
 
-const stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator();
+const Drawer = createDrawerNavigator();
+
+function DrawerNavigator() {
+  return (
+    <NavigationContainer independent={true}>
+      <Drawer.Navigator initialRouteName="Home">
+        <Drawer.Screen name="Home" component={MainMenu} />
+      </Drawer.Navigator>
+    </NavigationContainer>
+  );
+}
 
 export default function navigation() {
   return (
-    <NavigationContainer>
-      <stack.Navigator screenOptions={{ headerShown: false }}>
-        <stack.Screen name="Login" component={Login} />
-        <stack.Screen name="CreateAccount" component={CreateAccount} />
-      </stack.Navigator>
+    <NavigationContainer independent={true}>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="CreateAccount" component={CreateAccount} />
+        {/* After the login switch to drawer style navigation */}
+        <Stack.Screen name="Main" component={DrawerNavigator} />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }

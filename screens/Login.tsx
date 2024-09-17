@@ -7,9 +7,17 @@ const background = require('../assets/background.png');
 const logo = require('../assets/manzana_logo.png');
 const text_logo = require('../assets/texto_logo.png');
 
-export default function Login({navigation}: any) {
+export default function Login({ navigation }: any) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    const handleLogin = () => {
+        //TODO implement login firebase
+        navigation.reset({
+            index: 0,
+            routes: [{ name: 'Main' }],
+        });
+    };
 
     return (
         <View style={styles.container}>
@@ -28,7 +36,7 @@ export default function Login({navigation}: any) {
                     onChangeText={text => {
                         setPassword(text);
                     }} />
-                <Pressable style={[styles.button, { backgroundColor: '#CE0F2C', }]}>
+                <Pressable style={[styles.button, { backgroundColor: '#CE0F2C', }]} onPress={() => { handleLogin() }}>
                     <Text style={{ color: 'white' }}>LOG IN</Text>
                 </Pressable>
                 <Pressable style={[styles.button, { backgroundColor: '#F5A700', }]}

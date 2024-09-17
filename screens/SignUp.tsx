@@ -6,9 +6,9 @@ const background = require('../assets/background.png');
 const logo = require('../assets/manzana_logo.png');
 const text_logo = require('../assets/texto_logo.png');
 
-export default function CreateAccount({navigation}: any) {
+export default function SignUp({navigation}: any) {
     const [name, setName] = useState('');
-    // const [username, setUsername] = useState('');
+    const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -29,12 +29,12 @@ export default function CreateAccount({navigation}: any) {
                     onChangeText={text => {
                         setEmail(text);
                     }} />
-                {/* <TextInput
+                <TextInput
                     style={styles.input}
                     placeholder='Nombre de Usuario'
                     onChangeText={text => {
                         setUsername(text);
-                    }} /> */}
+                    }} />
                 <TextInput
                     style={styles.input}
                     placeholder='Password'
