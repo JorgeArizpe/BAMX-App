@@ -31,17 +31,17 @@ export default function Login({ navigation }: any) {
                     }} />
                 <TextInput
                     style={styles.input}
-                    placeholder='Password'
+                    placeholder='Contraseña'
                     secureTextEntry={true}
                     onChangeText={text => {
                         setPassword(text);
                     }} />
                 <Pressable style={[styles.button, { backgroundColor: '#CE0F2C', }]} onPress={() => { handleLogin() }}>
-                    <Text style={{ color: 'white' }}>LOG IN</Text>
+                    <Text style={{ color: 'white' }}>INICIAR SESIÓN</Text>
                 </Pressable>
                 <Pressable style={[styles.button, { backgroundColor: '#F5A700', }]}
                     onPress={() => { navigation.navigate('CreateAccount') }}>
-                    <Text style={{ color: 'black' }}>SIGN UP</Text>
+                    <Text style={{ color: 'black' }}>CREAR CUENTA</Text>
                 </Pressable>
                 <Image source={text_logo} style={{ width: 150, height: 80, resizeMode: 'contain', marginBottom: 50 }} />
             </ImageBackground>

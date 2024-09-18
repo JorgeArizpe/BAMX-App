@@ -37,18 +37,18 @@ export default function SignUp({navigation}: any) {
                     }} />
                 <TextInput
                     style={styles.input}
-                    placeholder='Password'
+                    placeholder='Contraseña'
                     onChangeText={text => {
                         setPassword(text);
                     }} />
                 <TextInput
                     style={styles.input}
-                    placeholder='Password confirmation'
+                    placeholder='Confirmar Contraseña'
                     onChangeText={text => {
                         setConfirmPassword(text);
                     }} />
                 <Pressable style={[styles.button, { backgroundColor: '#F5A700', }]}>
-                    <Text style={{ color: 'black' }}>SIGN UP</Text>
+                    <Text style={{ color: 'black' }}>CREAR CUENTA</Text>
                 </Pressable>
                 <Image source={text_logo} style={{ width: 150, height: 80, resizeMode: 'contain', marginBottom: 125 }} />
             </ImageBackground>

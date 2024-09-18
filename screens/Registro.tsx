@@ -1,16 +1,12 @@
 import { Text, View, StyleSheet,ImageBackground, Pressable } from 'react-native';
 
-const background = require('../assets/backgroundMain.png');
+const background = require('../assets/backgroundMainSmall.png');
 
-export default function MainMenu({ navigation }: any) {
+export default function Registro({ navigation }: any) {
     return (
         <View style={styles.container}>
             <ImageBackground source={background} resizeMode='cover' style={styles.back}>
-                <Text>Main Menu</Text>
-                {/* Botones temporales */}
-                <Pressable style={styles.button} onPress={() => { navigation.navigate('Registro') }}>
-                    <Text>Registro</Text>
-                </Pressable>
+                <Text>Registro</Text>
             </ImageBackground>
         </View>
     );
