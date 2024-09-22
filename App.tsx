@@ -8,6 +8,7 @@ import CreateAccount from './screens/SignUp';
 import MainMenu from './screens/MainMenu';
 import Inventario from './screens/Inventario';
 import Historial from './screens/Historial';
+import GenerarReporte from './screens/GenerarReporte';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -100,7 +101,7 @@ function DrawerNavigator() {
       />
       <Drawer.Screen
         name="Generar Reporte"
-        component={MainMenu}
+        component={GenerarReporte}
         options={{
           headerShown: false,
           drawerIcon: ({ focused, size }) => <Ionicons name="pencil" size={size} color={'white'} />

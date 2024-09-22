@@ -8,8 +8,8 @@ export default function MainMenu({ navigation }: any) {
             <ImageBackground source={background} resizeMode='cover' style={styles.back}>
                 <Text>Main Menu</Text>
                 {/* Botones temporales */}
-                <Pressable style={styles.button} onPress={() => { navigation.navigate('Historial') }}>
-                    <Text>Historial</Text>
+                <Pressable style={styles.button} onPress={() => { navigation.navigate('Generar Reporte') }}>
+                    <Text>Generar Reporte</Text>
                 </Pressable>
                 {/* Botones temporales */}
             </ImageBackground>
