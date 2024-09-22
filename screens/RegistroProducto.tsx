@@ -46,7 +46,10 @@ export default function RegistroProducto({ navigation }: any) {
                         </View>
                     </View>
 
-                    <TouchableOpacity style={styles.addButton}>
+                    <TouchableOpacity style={styles.addButton} onPress={() => { 
+                        alert('Producto agregado')
+                        navigation.navigate('Home') 
+                        }}>
                         <Text style={styles.addButtonText}>Agregar</Text>
                     </TouchableOpacity>
                 </View>
