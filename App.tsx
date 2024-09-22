@@ -9,6 +9,7 @@ import MainMenu from './screens/MainMenu';
 import Inventario from './screens/Inventario';
 import Historial from './screens/Historial';
 import GenerarReporte from './screens/GenerarReporte';
+import Entrada from './screens/Entrada';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -108,8 +109,8 @@ function DrawerNavigator() {
         }}
       />
       <Drawer.Screen
-        name="Categoria"
-        component={MainMenu}
+        name="Entrada"
+        component={Entrada}
         options={{
           headerShown: false,
           drawerIcon: ({ focused, size }) => <Ionicons name="add-circle-outline" size={size} color={'white'} />
