@@ -1,4 +1,4 @@
-import { Text, ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 import InventoryItem from '../components/InventoryItem';
 
 

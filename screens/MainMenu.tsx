@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet,ImageBackground, Pressable } from 'react-native';
+import { Text, View, StyleSheet, ImageBackground, Pressable } from 'react-native';
 
 const background = require('../assets/backgroundMain.png');
 
@@ -8,9 +8,10 @@ export default function MainMenu({ navigation }: any) {
             <ImageBackground source={background} resizeMode='cover' style={styles.back}>
                 <Text>Main Menu</Text>
                 {/* Botones temporales */}
-                <Pressable style={styles.button} onPress={() => { navigation.navigate('Inventario') }}>
-                    <Text>Inventario</Text>
+                <Pressable style={styles.button} onPress={() => { navigation.navigate('Historial') }}>
+                    <Text>Historial</Text>
                 </Pressable>
+                {/* Botones temporales */}
             </ImageBackground>
         </View>
     );

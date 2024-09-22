@@ -7,6 +7,7 @@ import Login from './screens/Login';
 import CreateAccount from './screens/SignUp';
 import MainMenu from './screens/MainMenu';
 import Inventario from './screens/Inventario';
+import Historial from './screens/Historial';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -91,10 +92,10 @@ function DrawerNavigator() {
 
       <Drawer.Screen
         name="Historial"
-        component={MainMenu}
+        component={Historial}
         options={{
           headerShown: false,
-          drawerIcon: ({ focused, size }) => <Ionicons name="search-circle" size={size} color={'white'} />
+          drawerIcon: ({ focused, size }) => <Ionicons name="search-circle" size={size} color={'white'} />,
         }}
       />
       <Drawer.Screen
