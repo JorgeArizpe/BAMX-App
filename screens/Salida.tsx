@@ -41,7 +41,7 @@ export default function Salida({ navigation }: any) {
                             </View>
                         </View>
                         <TouchableOpacity style={styles.confirmButton} onPress={() => {
-                            alert('Entrada registrada con éxito')
+                            alert('Salida registrada con éxito')
                             navigation.navigate('Home')
                         }}>
                             <Text style={{fontWeight: 'bold'}}>Confirmar</Text>
