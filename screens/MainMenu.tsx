@@ -8,8 +8,8 @@ export default function MainMenu({ navigation }: any) {
             <ImageBackground source={background} resizeMode='cover' style={styles.back}>
                 <Text>Main Menu</Text>
                 {/* Botones temporales */}
-                <Pressable style={styles.button} onPress={() => { navigation.navigate('Entrada') }}>
-                    <Text>entrada</Text>
+                <Pressable style={styles.button} onPress={() => { navigation.navigate('RegistroProducto') }}>
+                    <Text>Registro de Producto</Text>
                 </Pressable>
                 {/* Botones temporales */}
             </ImageBackground>

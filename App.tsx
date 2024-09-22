@@ -10,6 +10,7 @@ import Inventario from './screens/Inventario';
 import Historial from './screens/Historial';
 import GenerarReporte from './screens/GenerarReporte';
 import Entrada from './screens/Entrada';
+import RegistroProducto from './screens/RegistroProducto';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -124,10 +125,15 @@ export default function navigation() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
+        {/* Stack para las pantallas de login y registro  */}
         <Stack.Group>
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="CreateAccount" component={CreateAccount} />
           <Stack.Screen name="Main" component={DrawerNavigator} />
+        </Stack.Group>
+        {/* Stack para las pantallas de inventario y otros usos*/}
+        <Stack.Group>
+          <Stack.Screen name="RegistroProducto" component={RegistroProducto} />
         </Stack.Group>
       </Stack.Navigator>
     </NavigationContainer>

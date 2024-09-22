@@ -34,7 +34,10 @@ export default function GenerarReporte({ navigation }: any) {
 
                         <TextInput style={[styles.input, styles.descriptionInput]} placeholder="Descripción" placeholderTextColor="#888" multiline />
 
-                        <Pressable style={styles.confirmButton}>
+                        <Pressable style={styles.confirmButton} onPress={() => {
+                            alert('Reporte generado con éxito')
+                            navigation.navigate('Home')
+                        }}>
                             <Text style={styles.confirmButtonText}>Confirmar</Text>
                         </Pressable>
                     </View>

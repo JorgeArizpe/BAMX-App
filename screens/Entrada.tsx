@@ -1,4 +1,3 @@
-import React from 'react';
 import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Pressable } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
@@ -46,14 +45,19 @@ export default function Entrada({ navigation }: any) {
                                 <Text style={styles.unitText}>Kg</Text>
                             </View>
                         </View>
-                        <TouchableOpacity style={styles.confirmButton}>
+                        <TouchableOpacity style={styles.confirmButton} onPress={() => {
+                            alert('Entrada registrada con éxito')
+                            navigation.navigate('Home')
+                        }}>
                             <Text style={{fontWeight: 'bold'}}>Confirmar</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
 
                 <View style={styles.footer}>
-                    <TouchableOpacity style={styles.registerButton}>
+                    <TouchableOpacity style={styles.registerButton} onPress={() => {
+                        navigation.navigate('RegistroProducto')
+                    }}>
                         <Text style={styles.registerButtonText}>+</Text>
                     </TouchableOpacity>
                     <Text style={styles.registerText}>Registrar</Text>
