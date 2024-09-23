@@ -1,12 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
 import { StyleSheet, TextInput, View, ImageBackground, Image, Pressable, Text } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const background = require('../assets/background.png');
 const logo = require('../assets/manzana_logo.png');
 const text_logo = require('../assets/texto_logo.png');
 
-export default function SignUp({navigation}: any) {
+export default function SignUp({ navigation }: any) {
     const [name, setName] = useState('');
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
@@ -16,6 +17,11 @@ export default function SignUp({navigation}: any) {
     return (
         <View style={styles.container}>
             <ImageBackground source={background} resizeMode='cover' style={styles.back}>
+                <View style={styles.headerContainer}>
+                    <Pressable onPress={() => navigation.goBack()}>
+                        <Ionicons name="arrow-back" style={styles.backArrow} />
+                    </Pressable>
+                </View>
                 <Image source={logo} style={{ width: 150, height: 150, resizeMode: 'contain', margin: 20, }} />
                 <TextInput
                     style={styles.input}
@@ -47,7 +53,9 @@ export default function SignUp({navigation}: any) {
                     onChangeText={text => {
                         setConfirmPassword(text);
                     }} />
-                <Pressable style={[styles.button, { backgroundColor: '#F5A700', }]}>
+                <Pressable style={[styles.button, { backgroundColor: '#F5A700', }]} onPress={() => {
+                    navigation.navigate('Home');
+                }}>
                     <Text style={{ color: 'black' }}>CREAR CUENTA</Text>
                 </Pressable>
                 <Image source={text_logo} style={{ width: 150, height: 80, resizeMode: 'contain', marginBottom: 125 }} />
@@ -80,5 +88,22 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         alignItems: 'center',
         width: 200,
+    },
+    headerContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        width: '100%',
+        justifyContent: 'space-between',
+        paddingTop: 40,
+        paddingHorizontal: 20,
+    },
+    backArrow: {
+        fontSize: 40,
+        color: 'white',
+        backgroundColor: '#CE0F2C',
+        borderTopRightRadius: 10,
+        borderBottomRightRadius: 10,
+        paddingLeft: 20,
+        marginLeft: -20,
     },
 });
