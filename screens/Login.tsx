@@ -1,22 +1,43 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
 import { StyleSheet, TextInput, View, ImageBackground, Image, Pressable, Text } from 'react-native';
-
+import { useFirebase } from '../db/FirebaseContext';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 const background = require('../assets/background.png');
 const logo = require('../assets/manzana_logo.png');
 const text_logo = require('../assets/texto_logo.png');
 
 export default function Login({ navigation }: any) {
+    const { auth } = useFirebase();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
     const handleLogin = () => {
-        //TODO implement login firebase
-        navigation.reset({
-            index: 0,
-            routes: [{ name: 'Main' }],
-        });
+        if (auth) {
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    console.log('Usuario autenticado:', user);
+                    navigation.reset({
+                        index: 0,
+                        routes: [{ name: 'Main' }],
+                    });
+                })
+                .catch((error) => {
+                    if (error.code === 'auth/invalid-email') {
+                        alert('El email no es valido');
+                    } else if (error.code === 'auth/user-not-found') {
+                        alert('El usuario no existe');
+                    } else if (error.code === 'auth/wrong-password') {
+                        alert('La contraseña es incorrecta');
+                    } else if (error.code === 'auth/invalid-credential') {
+                        alert('Usuario o contraseña incorrectos');
+                    } else {
+                        console.error('Error al autenticar:', error);
+                    }
+                });
+        }
     };
 
     return (

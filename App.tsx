@@ -2,21 +2,35 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import { View, Text, StyleSheet, Pressable, Image } from 'react-native';
+import { initializeApp } from 'firebase/app';
+import { initializeAuth, getReactNativePersistence, onAuthStateChanged, signOut } from 'firebase/auth';
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
+import { getFirestore } from 'firebase/firestore';
+import { Login, CreateAccount, MainMenu, Inventario, Historial, GenerarReporte, Entrada, RegistroProducto, Salida } from './screens';
+import { FirebaseContext } from './db/FirebaseContext';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import Login from './screens/Login';
-import CreateAccount from './screens/SignUp';
-import MainMenu from './screens/MainMenu';
-import Inventario from './screens/Inventario';
-import Historial from './screens/Historial';
-import GenerarReporte from './screens/GenerarReporte';
-import Entrada from './screens/Entrada';
-import RegistroProducto from './screens/RegistroProducto';
-import Salida from './screens/Salida';
+import { useState, useEffect } from 'react';
+
+const firebaseConfig = {
+  apiKey: process.env.EXPO_PUBLIC_API_KEY,
+  authDomain: process.env.EXPO_PUBLIC_AUTH_DOMAIN,
+  databaseURL: process.env.EXPO_PUBLIC_DATABASE_URL,
+  projectId: process.env.EXPO_PUBLIC_PROJECT_ID,
+  storageBucket: process.env.EXPO_PUBLIC_STORAGE_BUCKET,
+  messagingSenderId: process.env.EXPO_PUBLIC_MESSAGING_SENDER_ID,
+  appId: process.env.EXPO_PUBLIC_APP_ID,
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+});
+const db = getFirestore(app);
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
-const screenOptions = ({ navigation }:any) => ({
+const screenOptions = ({ navigation }: any) => ({
   headerStyle: { height: 100 },
   headerLeft: () => (
     <Pressable onPress={() => navigation.goBack()}>
@@ -37,13 +51,21 @@ function CustomDrawerContent(props: any) {
   return (
     <DrawerContentScrollView {...props}>
       <View style={styles.customContent}>
-        <Text style={styles.customText}>Menu Epico Placeholder</Text>
+        <Text style={styles.customText}>Menu epico placeholder</Text>
       </View>
 
       <DrawerItemList {...props} />
 
       <View style={styles.bottomDrawerSection}>
-        <Pressable style={styles.drawerItem} onPress={() => props.navigation.navigate('Login')}>
+        <Pressable style={styles.drawerItem} onPress={() => {
+          signOut(auth)
+            .then(() => {
+              props.navigation.navigate('Login');
+            })
+            .catch((error) => {
+              console.error('Error al cerrar sesión:', error);
+            });
+        }}>
           <Ionicons name="log-out" size={24} color={'white'} style={styles.drawerItemIcon} />
           <Text style={styles.drawerItemText}>Cerrar Sesión</Text>
         </Pressable>
@@ -70,14 +92,6 @@ function DrawerNavigator() {
           headerTitle: ' ',
           headerStyle: { backgroundColor: '#CE0F2C', height: 100 },
           drawerIcon: ({ focused, size }) => <Ionicons name="home" size={size} color={'white'} />
-        }}
-      />
-      <Drawer.Screen
-        name="Configuracion"
-        component={MainMenu}
-        options={{
-          headerShown: false,
-          drawerIcon: ({ focused, size }) => <Ionicons name="settings" size={size} color={'white'} />
         }}
       />
       <Drawer.Screen
@@ -122,23 +136,40 @@ function DrawerNavigator() {
   );
 }
 
-export default function navigation() {
+export default function Navigation() {
+  const [initializing, setInitializing] = useState(true);
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+      if (initializing) setInitializing(false);
+    });
+
+    return unsubscribe;
+  }, []);
+
+  if (initializing) return null; // O un componente de carga
+
   return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {/* Stack para las pantallas de login y registro  */}
-        <Stack.Group>
-          <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="CreateAccount" component={CreateAccount} />
-          <Stack.Screen name="Main" component={DrawerNavigator} />
-        </Stack.Group>
-        {/* Stack para las pantallas de inventario y otros usos*/}
-        <Stack.Group>
-          <Stack.Screen name="RegistroProducto" component={RegistroProducto} />
-          <Stack.Screen name="Salida" component={Salida} />
-        </Stack.Group>
-      </Stack.Navigator>
-    </NavigationContainer>
+    <FirebaseContext.Provider value={{ app, auth, db }}>
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          {user ? (
+            <>
+              <Stack.Screen name="Main" component={DrawerNavigator}/>
+              <Stack.Screen name="RegistroProducto" component={RegistroProducto} />
+              <Stack.Screen name="Salida" component={Salida} />
+            </>
+          ) : (
+            <>
+              <Stack.Screen name="Login" component={Login} />
+              <Stack.Screen name="CreateAccount" component={CreateAccount} />
+            </>
+          )}
+        </Stack.Navigator>
+      </NavigationContainer>
+    </FirebaseContext.Provider>
   );
 }
 

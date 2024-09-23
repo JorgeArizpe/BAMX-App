@@ -1,6 +1,9 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
 import { StyleSheet, TextInput, View, ImageBackground, Image, Pressable, Text } from 'react-native';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { useFirebase } from '../db/FirebaseContext';
+import { addDoc, collection } from "firebase/firestore";
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 const background = require('../assets/background.png');
@@ -8,6 +11,7 @@ const logo = require('../assets/manzana_logo.png');
 const text_logo = require('../assets/texto_logo.png');
 
 export default function SignUp({ navigation }: any) {
+    const { auth, db } = useFirebase();
     const [name, setName] = useState('');
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
@@ -53,9 +57,34 @@ export default function SignUp({ navigation }: any) {
                     onChangeText={text => {
                         setConfirmPassword(text);
                     }} />
-                <Pressable style={[styles.button, { backgroundColor: '#F5A700', }]} onPress={() => {
-                    navigation.navigate('Home');
-                }}>
+                <Pressable style={[styles.button, { backgroundColor: '#F5A700', }]}
+                    onPress={() => {
+                        if (password !== confirmPassword) {
+                            alert('Las contraseñas no coinciden');
+                        } else {
+                            if (auth) {
+                                createUserWithEmailAndPassword(auth, email, password)
+                                    .then(async (userCredential) => {
+                                        const user = userCredential.user;
+                                        updateProfile(user, { displayName: username });
+                                        if (db) {
+                                            var userCollection = collection(db, 'Usuarios')
+                                            await addDoc(userCollection, {
+                                                name: name,
+                                                username: username,
+                                                email: email,
+                                            });
+                                            console.log('Usuario creado con éxito');
+                                            navigation.navigate('Home');
+                                        }
+                                    })
+                                    .catch((error) => {
+                                        alert('Error al crear usuario: ' + error.message);
+                                        console.error('Error al crear usuario:', error);
+                                    });
+                            }
+                        }
+                    }}>
                     <Text style={{ color: 'black' }}>CREAR CUENTA</Text>
                 </Pressable>
                 <Image source={text_logo} style={{ width: 150, height: 80, resizeMode: 'contain', marginBottom: 125 }} />
