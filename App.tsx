@@ -51,7 +51,7 @@ function CustomDrawerContent(props: any) {
   return (
     <DrawerContentScrollView {...props}>
       <View style={styles.customContent}>
-        <Text style={styles.customText}>Menu epico placeholder</Text>
+        <Text style={styles.customText}>Bienvenido, {props.name}</Text>
       </View>
 
       <DrawerItemList {...props} />
@@ -74,11 +74,12 @@ function CustomDrawerContent(props: any) {
   );
 }
 
-function DrawerNavigator() {
+function DrawerNavigator({ route }: any) {
+  const { name } = route.params;
   return (
     <Drawer.Navigator
       initialRouteName="Home"
-      drawerContent={(props) => <CustomDrawerContent {...props} />}
+      drawerContent={(props) => <CustomDrawerContent {...props} name={name} />}
       screenOptions={{
         drawerStyle: { backgroundColor: '#CE0F2C', width: 240, borderTopRightRadius: 30, borderBottomRightRadius: 30 },
         drawerLabelStyle: { color: 'white', fontSize: 13, flexWrap: 'wrap' },
@@ -149,7 +150,7 @@ export default function Navigation() {
     return unsubscribe;
   }, []);
 
-  if (initializing) return null; // O un componente de carga
+  if (initializing) return null; // Or a loading component
 
   return (
     <FirebaseContext.Provider value={{ app, auth, db }}>
@@ -157,7 +158,7 @@ export default function Navigation() {
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           {user ? (
             <>
-              <Stack.Screen name="Main" component={DrawerNavigator}/>
+              <Stack.Screen name="Main" component={DrawerNavigator} initialParams={{ name: user.displayName }} />
               <Stack.Screen name="RegistroProducto" component={RegistroProducto} />
               <Stack.Screen name="Salida" component={Salida} />
             </>
