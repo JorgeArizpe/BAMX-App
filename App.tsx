@@ -6,7 +6,7 @@ import { initializeApp } from 'firebase/app';
 import { initializeAuth, getReactNativePersistence, onAuthStateChanged, signOut } from 'firebase/auth';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import { getFirestore } from 'firebase/firestore';
-import { Login, CreateAccount, MainMenu, Inventario, Historial, GenerarReporte, Entrada, RegistroProducto, Salida } from './screens';
+import { Login, CreateAccount, MainMenu, Inventario, Historial, GenerarReporte, Entrada, RegistroProducto, Salida, Loading } from './screens';
 import { FirebaseContext } from './db/FirebaseContext';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useState, useEffect } from 'react';
@@ -150,7 +150,7 @@ export default function Navigation() {
     return unsubscribe;
   }, []);
 
-  if (initializing) return null; // Or a loading component
+  if (initializing) return <Loading />; // Or a loading component
 
   return (
     <FirebaseContext.Provider value={{ app, auth, db }}>
