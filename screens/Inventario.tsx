@@ -1,4 +1,4 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, FlatList, ActivityIndicator } from 'react-native';
 import { useState, useEffect } from 'react';
 import CategoryItem from '../components/CategoryItem';
 import { useFirebase } from '../db/FirebaseContext';
@@ -20,14 +20,13 @@ export default function Inventario({ navigation }: any) {
     return (
         <View style={styles.container}>
             {
-                categorias.map((categoria, index) => {
-                    console.log(categoria);
-                    return (
-                        <View key={index}>
-                            <CategoryItem title={categoria} navigation={navigation} />
-                        </View>
-                    )
-                })
+                categorias.length > 0 ?
+                    <FlatList
+                        data={categorias}
+                        renderItem={({ item }) => <CategoryItem title={item} navigation={navigation} />}
+                    />
+                    :
+                    <ActivityIndicator size="large" color="#0000ff" />
             }
         </View>
     );

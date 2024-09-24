@@ -32,7 +32,7 @@ const storage = getStorage(app);
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
-const screenOptions = ({ navigation }: any) => ({
+const screenOptionsDrawer = ({ navigation }: any) => ({
   headerLeft: () => (
     <Pressable onPress={() => navigation.goBack()}>
       <Ionicons name="arrow-back" style={styles.backArrow} />
@@ -44,6 +44,29 @@ const screenOptions = ({ navigation }: any) => ({
         source={require('./assets/manzana_logo.png')}
         style={styles.headerRightImage}
       />
+    </Pressable>
+  ),
+});
+
+const screenOptionsStack = ({ navigation }: any) => ({
+  headerBackVisible: false,
+  headerShown: true,
+  headerTitle: () => (
+    <View style={styles.headerTitleContainer}>
+      <Text style={styles.headerTitle}>Inventario</Text>
+    </View>
+  ),
+  headerRight: () => (
+    <Pressable onPress={() => navigation.navigate('Home')}>
+      <Image
+        source={require('./assets/manzana_logo.png')}
+        style={styles.headerRightImage}
+      />
+    </Pressable>
+  ),
+  headerLeft: () => (
+    <Pressable onPress={() => navigation.goBack()}>
+      <Ionicons name="arrow-back" style={[styles.backArrow, { marginLeft: -20, marginRight: 20 }]} />
     </Pressable>
   ),
 });
@@ -93,20 +116,20 @@ function DrawerNavigator({ route }: any) {
         options={{
           headerTitle: ' ',
           headerStyle: { backgroundColor: '#CE0F2C', height: 100 },
-          drawerIcon: ({ focused, size }) => <Ionicons name="home" size={size} color={'white'} />
+          drawerIcon: ({ size }) => <Ionicons name="home" size={size} color={'white'} />
         }}
       />
       <Drawer.Screen
         name="Inventario"
         component={Inventario}
         options={({ navigation }) => ({
-          drawerIcon: ({ focused, size }) => <Ionicons name="square" size={size} color={'white'} />,
+          drawerIcon: ({ size }) => <Ionicons name="square" size={size} color={'white'} />,
           headerTitle: () => (
             <View style={styles.headerTitleContainer}>
               <Text style={styles.headerTitle}>Inventario</Text>
             </View>
           ),
-          ...screenOptions({ navigation }),
+          ...screenOptionsDrawer({ navigation }),
         })}
       />
 
@@ -115,7 +138,7 @@ function DrawerNavigator({ route }: any) {
         component={Historial}
         options={{
           headerShown: false,
-          drawerIcon: ({ focused, size }) => <Ionicons name="search-circle" size={size} color={'white'} />,
+          drawerIcon: ({ size }) => <Ionicons name="search-circle" size={size} color={'white'} />,
         }}
       />
       <Drawer.Screen
@@ -123,7 +146,7 @@ function DrawerNavigator({ route }: any) {
         component={GenerarReporte}
         options={{
           headerShown: false,
-          drawerIcon: ({ focused, size }) => <Ionicons name="pencil" size={size} color={'white'} />
+          drawerIcon: ({ size }) => <Ionicons name="pencil" size={size} color={'white'} />
         }}
       />
       <Drawer.Screen
@@ -131,7 +154,7 @@ function DrawerNavigator({ route }: any) {
         component={Entrada}
         options={{
           headerShown: false,
-          drawerIcon: ({ focused, size }) => <Ionicons name="add-circle-outline" size={size} color={'white'} />
+          drawerIcon: ({ size }) => <Ionicons name="add-circle-outline" size={size} color={'white'} />
         }}
       />
     </Drawer.Navigator>
@@ -166,26 +189,7 @@ export default function Navigation() {
                 name="InventarioDetalles"
                 component={InventarioDetalles}
                 options={({ navigation }) => ({
-                  headerBackVisible: false,
-                  headerShown: true,
-                  headerTitle: () => (
-                    <View style={styles.headerTitleContainer}>
-                      <Text style={styles.headerTitle}>Inventario</Text>
-                    </View>
-                  ),
-                  headerRight: () => (
-                    <Pressable onPress={() => navigation.navigate('Home')}>
-                      <Image
-                        source={require('./assets/manzana_logo.png')}
-                        style={styles.headerRightImage}
-                      />
-                    </Pressable>
-                  ),
-                  headerLeft: () => (
-                    <Pressable onPress={() => navigation.goBack()}>
-                      <Ionicons name="arrow-back" style={[styles.backArrow, { marginLeft: -20 , marginRight: 20}]} />
-                    </Pressable>
-                  ),
+                  ...screenOptionsStack({ navigation }),
                 })}
               />
             </>
