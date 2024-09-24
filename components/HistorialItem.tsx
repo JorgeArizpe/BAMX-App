@@ -11,17 +11,14 @@ export default function HistorialItem({ item }: any) {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        console.log(item);
         const getProducto = async () => {
             if (db) {
                 try {
                     const docRef = doc(db, item.producto.path);
                     const docSnap = await getDoc(docRef);
-                    console.log(docSnap.data());
                     setProducto(docSnap.data());
                     const userDocRef = doc(db, item.usuario.path);
                     const userDocSnap = await getDoc(userDocRef);
-                    console.log(userDocSnap.data());
                     setUsuario(userDocSnap.data());
                 } catch (error) {
                     console.error('Error fetching product:', error);

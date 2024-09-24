@@ -1,4 +1,4 @@
-import { ScrollView, View, StyleSheet, Text, ImageBackground, Pressable, FlatList } from 'react-native';
+import { View, StyleSheet, Text, ImageBackground, Pressable, FlatList } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { collection, query, getDocs } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
