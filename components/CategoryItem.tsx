@@ -11,7 +11,6 @@ export default function InventoryItem({ title, navigation }: any) {
 
     getDownloadURL(storageRef).then((url) => {
         setImageSource({ uri: url });
-        console.log(url);
     }).catch((error) => {
         console.log(error);
     });
