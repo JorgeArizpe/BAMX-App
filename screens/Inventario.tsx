@@ -2,7 +2,7 @@ import { StyleSheet, View } from 'react-native';
 import { useState, useEffect } from 'react';
 import CategoryItem from '../components/CategoryItem';
 import { useFirebase } from '../db/FirebaseContext';
-import { doc, getDoc } from 'firebase/firestore';
+import getCategorias from '../db/getCategorias';
 
 export default function Inventario({ navigation }: any) {
 
@@ -11,19 +11,9 @@ export default function Inventario({ navigation }: any) {
 
     useEffect(() => {
         if (db) {
-            const getCategorias = async () => {
-                const docRef = doc(db, 'Inventario', 'Categorias');
-                const docSnap = await getDoc(docRef);
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    const categoriasArray: any[] = data.categorias || [];
-                    console.log(categoriasArray);
-                    setCategorias(categoriasArray);
-                } else {
-                    console.log("No such document!");
-                }
-            };
-            getCategorias();
+            getCategorias(db).then((categorias) => {
+                setCategorias(categorias);
+            });
         }
     }, [db]);
 
