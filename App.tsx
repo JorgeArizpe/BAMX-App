@@ -6,6 +6,7 @@ import { initializeApp } from 'firebase/app';
 import { initializeAuth, getReactNativePersistence, onAuthStateChanged, signOut } from 'firebase/auth';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import { getFirestore } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 import { Login, CreateAccount, MainMenu, Inventario, Historial, GenerarReporte, Entrada, RegistroProducto, Salida, Loading } from './screens';
 import { FirebaseContext } from './db/FirebaseContext';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -27,7 +28,7 @@ const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(ReactNativeAsyncStorage)
 });
 const db = getFirestore(app);
-
+const storage = getStorage(app);
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
@@ -153,7 +154,7 @@ export default function Navigation() {
   if (initializing) return <Loading />; // Or a loading component
 
   return (
-    <FirebaseContext.Provider value={{ app, auth, db }}>
+    <FirebaseContext.Provider value={{ app, auth, db, storage }}>
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           {user ? (

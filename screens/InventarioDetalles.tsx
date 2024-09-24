@@ -12,7 +12,6 @@ export default function InventarioDetalles({ navigation, route }: any) {
     useEffect(() => {
         if (db) {
             const getProductos = async () => {
-                console.log(`/Inventario/Categorias/${title}`);
                 const querySnapshot = await getDocs(collection(db, `/Inventario/Categorias/${title}`));
                 const productos = querySnapshot.docs.map(doc => ({
                     id: doc.id,

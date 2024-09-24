@@ -1,8 +1,21 @@
 import { View, Text, Image, StyleSheet, Pressable } from 'react-native';
-
-const imageSource = require('../assets/inventarioPlaceholder.png');
+import { useState } from 'react';
+import { ref, getDownloadURL } from 'firebase/storage';
+import { useFirebase } from '../db/FirebaseContext';
 
 export default function InventoryItem({ title, navigation }: any) {
+    const [imageSource, setImageSource] = useState(require('../assets/inventarioPlaceholder.png'));
+    const { storage } = useFirebase();
+
+    var storageRef = storage ? ref(storage, `Categorias/${title}.png`) : require('../assets/inventarioPlaceholder.png');
+
+    getDownloadURL(storageRef).then((url) => {
+        setImageSource({ uri: url });
+        console.log(url);
+    }).catch((error) => {
+        console.log(error);
+    });
+
     return (
         <View style={{ marginTop: 30 }}>
             <Pressable onPress={() => navigation.navigate('InventarioDetalles', { title })}>
@@ -38,7 +51,7 @@ const styles = StyleSheet.create({
     image: {
         width: 150,
         height: 100,
-        resizeMode: 'center',
+        resizeMode: 'contain',
     },
     title: {
         fontSize: 18,
