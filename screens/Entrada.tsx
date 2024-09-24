@@ -1,9 +1,27 @@
-import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Pressable, Alert } from 'react-native';
+import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Pressable, Alert, Keyboard } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useState, useEffect } from 'react';
 
 const background = require('../assets/backgroundMainSmall.png');
 
 export default function Entrada({ navigation }: any) {
+    
+    const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
+    useEffect(() => {
+        const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+            setKeyboardVisible(true);
+        });
+        const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+            setKeyboardVisible(false);
+        });
+
+        return () => {
+            keyboardDidHideListener.remove();
+            keyboardDidShowListener.remove();
+        };
+    }, []);
+    
     return (
         <View style={styles.container}>
             <ImageBackground source={background} resizeMode='stretch' style={styles.back}>
@@ -53,15 +71,16 @@ export default function Entrada({ navigation }: any) {
                         </TouchableOpacity>
                     </View>
                 </View>
-
-                <View style={styles.footer}>
-                    <TouchableOpacity style={styles.registerButton} onPress={() => {
-                        navigation.navigate('RegistroProducto')
-                    }}>
-                        <Text style={styles.registerButtonText}>+</Text>
-                    </TouchableOpacity>
-                    <Text style={styles.registerText}>Registrar</Text>
-                </View>
+                {!isKeyboardVisible ? (
+                    <View style={styles.footer}>
+                        <TouchableOpacity style={styles.registerButton} onPress={() => {
+                            navigation.navigate('RegistroProducto')
+                        }}>
+                            <Text style={styles.registerButtonText}>+</Text>
+                        </TouchableOpacity>
+                        <Text style={styles.registerText}>Registrar</Text>
+                    </View>
+                ) : null}
             </ImageBackground>
         </View>
     );
