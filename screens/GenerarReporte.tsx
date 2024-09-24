@@ -1,4 +1,4 @@
-import { View, StyleSheet, Text, ImageBackground, Pressable, TextInput } from 'react-native';
+import { View, StyleSheet, Text, ImageBackground, Pressable, TextInput, Alert } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 const background = require('../assets/backgroundMainSmall.png');
@@ -35,7 +35,7 @@ export default function GenerarReporte({ navigation }: any) {
                         <TextInput style={[styles.input, styles.descriptionInput]} placeholder="Descripción" placeholderTextColor="#888" multiline />
 
                         <Pressable style={styles.confirmButton} onPress={() => {
-                            alert('Reporte generado con éxito')
+                            Alert.alert('Reporte', 'Reporte generado con éxito')
                             navigation.navigate('Home')
                         }}>
                             <Text style={styles.confirmButtonText}>Confirmar</Text>

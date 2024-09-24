@@ -1,4 +1,4 @@
-import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Pressable } from 'react-native';
+import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Pressable, Alert } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 const background = require('../assets/backgroundMainSmall.png');
@@ -47,7 +47,7 @@ export default function RegistroProducto({ navigation }: any) {
                     </View>
 
                     <TouchableOpacity style={styles.addButton} onPress={() => { 
-                        alert('Producto agregado')
+                        Alert.alert('Registro', 'Producto agregado')
                         navigation.navigate('Home') 
                         }}>
                         <Text style={styles.addButtonText}>Agregar</Text>

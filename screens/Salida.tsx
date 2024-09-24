@@ -1,4 +1,4 @@
-import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Pressable } from 'react-native';
+import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Pressable, Alert } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 const background = require('../assets/backgroundMainSmall.png');
@@ -41,7 +41,7 @@ export default function Salida({ navigation }: any) {
                             </View>
                         </View>
                         <TouchableOpacity style={styles.confirmButton} onPress={() => {
-                            alert('Salida registrada con éxito')
+                            Alert.alert('Salida', 'Salida registrada con éxito')
                             navigation.navigate('Home')
                         }}>
                             <Text style={{fontWeight: 'bold'}}>Confirmar</Text>

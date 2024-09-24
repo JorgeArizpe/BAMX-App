@@ -174,7 +174,7 @@ export default function Navigation() {
     return unsubscribe;
   }, []);
 
-  if (initializing) return <Loading />; // Or a loading component
+  if (initializing) return <Loading />;
 
   return (
     <FirebaseContext.Provider value={{ app, auth, db, storage }}>
