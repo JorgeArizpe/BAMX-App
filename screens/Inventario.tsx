@@ -1,25 +1,20 @@
-import { ScrollView, StyleSheet } from 'react-native';
-import InventoryItem from '../components/InventoryItem';
-
+import { StyleSheet, View } from 'react-native';
+import CategoryItem from '../components/CategoryItem';
 
 export default function Inventario({ navigation }: any) {
+    const categorias = ['Abarrotes', 'Canasta Basica', 'Fruta y verdura', 'No alimenticios', 'Productos animales']
     return (
-        <ScrollView style={styles.container}>
-            <InventoryItem
-                title="Manzanas"
-                imageSource={require('../assets/inventarioPlaceholder.png')}
-                quantity={120}
-                unit="Kg"
-                minQuantity={100}
-            />
-            <InventoryItem
-                title="Manzanas"
-                imageSource={require('../assets/inventarioPlaceholder.png')}
-                quantity={20}
-                unit="Kg"
-                minQuantity={100}
-            />
-        </ScrollView>
+        <View style={styles.container}>
+            {
+                categorias.map((categoria, index) => {
+                    return (
+                        <View key={index}>
+                            <CategoryItem title={categoria} navigation={navigation} />
+                        </View>
+                    )
+                })
+            }
+        </View>
     );
 }
 

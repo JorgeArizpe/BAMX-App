@@ -10,6 +10,7 @@ import { Login, CreateAccount, MainMenu, Inventario, Historial, GenerarReporte, 
 import { FirebaseContext } from './db/FirebaseContext';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useState, useEffect } from 'react';
+import InventarioDetalles from './screens/InventarioDetalles';
 
 const firebaseConfig = {
   apiKey: process.env.EXPO_PUBLIC_API_KEY,
@@ -31,7 +32,6 @@ const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
 const screenOptions = ({ navigation }: any) => ({
-  headerStyle: { height: 100 },
   headerLeft: () => (
     <Pressable onPress={() => navigation.goBack()}>
       <Ionicons name="arrow-back" style={styles.backArrow} />
@@ -41,7 +41,7 @@ const screenOptions = ({ navigation }: any) => ({
     <Pressable onPress={() => navigation.navigate('Home')}>
       <Image
         source={require('./assets/manzana_logo.png')}
-        style={[styles.headerRightImage, { resizeMode: 'contain' }]}
+        style={styles.headerRightImage}
       />
     </Pressable>
   ),
@@ -161,6 +161,32 @@ export default function Navigation() {
               <Stack.Screen name="Main" component={DrawerNavigator} initialParams={{ name: user.displayName }} />
               <Stack.Screen name="RegistroProducto" component={RegistroProducto} />
               <Stack.Screen name="Salida" component={Salida} />
+              <Stack.Screen
+                name="InventarioDetalles"
+                component={InventarioDetalles}
+                options={({ navigation }) => ({
+                  headerBackVisible: false,
+                  headerShown: true,
+                  headerTitle: () => (
+                    <View style={styles.headerTitleContainer}>
+                      <Text style={styles.headerTitle}>Inventario</Text>
+                    </View>
+                  ),
+                  headerRight: () => (
+                    <Pressable onPress={() => navigation.navigate('Home')}>
+                      <Image
+                        source={require('./assets/manzana_logo.png')}
+                        style={styles.headerRightImage}
+                      />
+                    </Pressable>
+                  ),
+                  headerLeft: () => (
+                    <Pressable onPress={() => navigation.goBack()}>
+                      <Ionicons name="arrow-back" style={[styles.backArrow, { marginLeft: -20 , marginRight: 20}]} />
+                    </Pressable>
+                  ),
+                })}
+              />
             </>
           ) : (
             <>
@@ -229,5 +255,6 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     marginRight: 15,
+    resizeMode: 'contain',
   },
 });

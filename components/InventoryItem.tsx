@@ -3,7 +3,7 @@ import { View, Text, Image, StyleSheet } from 'react-native';
 export default function InventoryItem({ title, imageSource, quantity, unit, minQuantity }: any) {
     const isLowStock = quantity < minQuantity;
     return (
-        <View style={{marginTop:30}}>
+        <View style={{ marginTop: 30 }}>
             <Text style={styles.title}>{title}</Text>
             <View style={[styles.itemContainer, isLowStock ? styles.lowStock : styles.inStock]}>
                 <View style={styles.contentContainer}>
