@@ -6,10 +6,11 @@ const text_logo = require('../assets/texto_logo.png');
 
 export default function Loading() {
     return (
-        <View style={styles.container}>
-            <ImageBackground source={background} style={styles.background} />
-            <Image source={logo} style={styles.logo} />
-            <Image source={text_logo} style={styles.text_logo} />
+<View style={styles.container}>
+            <ImageBackground source={background} resizeMode='cover' style={styles.back}>
+                <Image source={logo} style={{ width: 150, height: 150, resizeMode: 'contain', margin: 20, }} />
+                <Image source={text_logo} style={{ width: 150, height: 80, resizeMode: 'contain', marginBottom: 50 }} />
+            </ImageBackground>
         </View>
     );
 }
@@ -17,21 +18,10 @@ export default function Loading() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
     },
-    background: {
+    back: {
         flex: 1,
-        resizeMode: 'cover',
         justifyContent: 'center',
         alignItems: 'center',
-    },
-    logo: {
-        width: 200,
-        height: 200,
-    },
-    text_logo: {
-        width: 200,
-        height: 200,
     },
 });
