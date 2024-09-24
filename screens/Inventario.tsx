@@ -2,7 +2,7 @@ import { StyleSheet, View } from 'react-native';
 import CategoryItem from '../components/CategoryItem';
 
 export default function Inventario({ navigation }: any) {
-    const categorias = ['Abarrotes', 'Canasta Basica', 'Fruta y verdura', 'No alimenticios', 'Productos animales']
+    const categorias = ['Abarrotes', 'Canasta basica', 'Fruta y verdura', 'No alimenticios', 'Productos animales']
     return (
         <View style={styles.container}>
             {

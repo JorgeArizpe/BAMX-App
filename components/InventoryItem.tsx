@@ -1,10 +1,12 @@
 import { View, Text, Image, StyleSheet } from 'react-native';
 
-export default function InventoryItem({ title, imageSource, quantity, unit, minQuantity }: any) {
-    const isLowStock = quantity < minQuantity;
+const imageSource = require('../assets/inventarioPlaceholder.png');
+
+export default function InventoryItem({ nombre, cantActual, unidad, cantMin }: any) {
+    const isLowStock = cantActual < cantMin;
     return (
         <View style={{ marginTop: 30 }}>
-            <Text style={styles.title}>{title}</Text>
+            <Text style={styles.title}>{nombre}</Text>
             <View style={[styles.itemContainer, isLowStock ? styles.lowStock : styles.inStock]}>
                 <View style={styles.contentContainer}>
                     <View style={styles.imageContainer}>
@@ -12,9 +14,9 @@ export default function InventoryItem({ title, imageSource, quantity, unit, minQ
                     </View>
                     <View style={styles.detailsContainer}>
                         <Text style={styles.text}>
-                            Cantidad: {quantity} {unit}
+                            Cantidad: {cantActual} {unidad}
                         </Text>
-                        {isLowStock && <Text style={[styles.text, { color: 'red' }]}>Mínimo: {minQuantity} {unit}</Text>}
+                        {isLowStock && <Text style={[styles.text, { color: 'red' }]}>Mínimo: {cantMin} {unidad}</Text>}
                     </View>
                 </View>
             </View>
