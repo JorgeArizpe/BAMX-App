@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { StyleSheet, TextInput, View, ImageBackground, Image, Pressable, Text } from 'react-native';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { useFirebase } from '../db/FirebaseContext';
-import { addDoc, collection } from "firebase/firestore";
+import { setDoc, doc } from "firebase/firestore";
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 const background = require('../assets/background.png');
@@ -68,8 +68,8 @@ export default function SignUp({ navigation }: any) {
                                         const user = userCredential.user;
                                         updateProfile(user, { displayName: username });
                                         if (db) {
-                                            var userCollection = collection(db, 'Usuarios')
-                                            await addDoc(userCollection, {
+                                            var userCollection = doc(db, 'Usuarios', user.uid)
+                                            await setDoc(userCollection, {
                                                 name: name,
                                                 username: username,
                                                 email: email,
