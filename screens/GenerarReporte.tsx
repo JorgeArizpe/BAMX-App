@@ -1,9 +1,30 @@
 import { View, StyleSheet, Text, ImageBackground, Pressable, TextInput, Alert } from 'react-native';
+import { useState } from 'react';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 const background = require('../assets/backgroundMainSmall.png');
 
 export default function GenerarReporte({ navigation }: any) {
+
+    const [dateInicio, setDateInicio] = useState(new Date());
+    const [dateFin, setDateFin] = useState(new Date());
+    const [showPickerInicio, setShowPickerInicio] = useState(false);
+    const [showPickerFin, setShowPickerFin] = useState(false);
+    const [titulo, setTitulo] = useState('');
+    const [descripcion, setDescripcion] = useState('');
+
+    const onChangeInicio = (event: any, selectedDate?: Date) => {
+        const currentDate = selectedDate || dateInicio;
+        setShowPickerInicio(false);
+        setDateInicio(currentDate);
+    };
+    const onChangeFin = (event: any, selectedDate?: Date) => {
+        const currentDate = selectedDate || dateFin;
+        setShowPickerFin(false);
+        setDateFin(currentDate);
+    };
+
     return (
         <View style={styles.container}>
             <ImageBackground source={background} resizeMode='cover' style={styles.back}>
@@ -15,35 +36,68 @@ export default function GenerarReporte({ navigation }: any) {
                 </View>
 
                 <View style={styles.contentContainer}>
-                    <View style={styles.formContainer}>
-                        <TextInput style={styles.input} placeholder="Título" placeholderTextColor="#888" />
-
-                        <Text style={styles.label}>Seleccionar fecha desde</Text>
-                        <View style={styles.dateContainer}>
-                            <Pressable style={styles.dateButton}><Text style={styles.dateButtonText}>Día</Text></Pressable>
-                            <Pressable style={styles.dateButton}><Text style={styles.dateButtonText}>Mes</Text></Pressable>
-                            <Pressable style={styles.dateButton}><Text style={styles.dateButtonText}>Año</Text></Pressable>
+                    <TextInput style={styles.input} placeholder='Titulo' value={titulo} onChangeText={setTitulo} />
+                    <View style={styles.label}>
+                        <View>
+                            <Pressable style={styles.dateButton} onPress={() => setShowPickerInicio(true)}>
+                                <Text style={styles.dateButtonText}>Fecha de inicio</Text>
+                            </Pressable>
+                            <Text style={styles.selectedDate}>
+                                Fecha seleccionada: {dateInicio.toLocaleDateString()}
+                            </Text>
                         </View>
-
-                        <Text style={styles.label}>Seleccionar fecha hasta</Text>
-                        <View style={styles.dateContainer}>
-                            <Pressable style={styles.dateButton}><Text style={styles.dateButtonText}>Día</Text></Pressable>
-                            <Pressable style={styles.dateButton}><Text style={styles.dateButtonText}>Mes</Text></Pressable>
-                            <Pressable style={styles.dateButton}><Text style={styles.dateButtonText}>Año</Text></Pressable>
+                        <View>
+                            {showPickerInicio && (
+                                <DateTimePicker
+                                    value={dateInicio}
+                                    mode='date'
+                                    display="default"
+                                    onChange={(event, selectedDate) => {
+                                        setShowPickerInicio(false);
+                                        onChangeInicio(event, selectedDate);
+                                    }}
+                                    is24Hour={true}
+                                />
+                            )}
                         </View>
-
-                        <TextInput style={[styles.input, styles.descriptionInput]} placeholder="Descripción" placeholderTextColor="#888" multiline />
-
-                        <Pressable style={styles.confirmButton} onPress={() => {
-                            Alert.alert('Reporte', 'Reporte generado con éxito')
-                            navigation.navigate('Home')
-                        }}>
-                            <Text style={styles.confirmButtonText}>Confirmar</Text>
-                        </Pressable>
                     </View>
+
+                    <View style={styles.label}>
+                        <View>
+                            <Pressable style={styles.dateButton} onPress={() => setShowPickerFin(true)}>
+                                <Text style={styles.dateButtonText}>Fecha de fin</Text>
+                            </Pressable>
+                            <Text style={styles.selectedDate}>
+                                Fecha seleccionada: {dateFin.toLocaleDateString()}
+                            </Text>
+                        </View>
+                        <View>
+                            {showPickerFin && (
+                                <DateTimePicker
+                                    value={dateFin}
+                                    mode='date'
+                                    display="default"
+                                    onChange={(event, selectedDate) => {
+                                        setShowPickerFin(false);
+                                        onChangeFin(event, selectedDate);
+                                    }}
+                                    is24Hour={true}
+                                />
+                            )}
+                        </View>
+                    </View>
+
+                    <TextInput style={[styles.input, styles.descriptionInput]} placeholder="Descripción" value={descripcion} onChangeText={setDescripcion} />
+
+                    <Pressable style={styles.confirmButton} onPress={() => {
+                        Alert.alert('Reporte', 'Reporte generado con éxito')
+                        navigation.navigate('Home')
+                    }}>
+                        <Text style={styles.confirmButtonText}>Confirmar</Text>
+                    </Pressable>
                 </View>
-            </ImageBackground>
-        </View>
+            </ImageBackground >
+        </View >
     );
 }
 const styles = StyleSheet.create({
@@ -101,17 +155,6 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         marginBottom: 15,
     },
-    dateButton: {
-        backgroundColor: '#ffc107',
-        borderRadius: 15,
-        padding: 10,
-        flex: 1,
-        marginHorizontal: 5,
-    },
-    dateButtonText: {
-        color: 'black',
-        textAlign: 'center',
-    },
     descriptionInput: {
         height: 100,
         textAlignVertical: 'top',
@@ -125,5 +168,20 @@ const styles = StyleSheet.create({
     confirmButtonText: {
         color: 'black',
         fontWeight: 'bold',
+    },
+    dateButton: {
+        backgroundColor: '#007AFF',
+        padding: 10,
+        borderRadius: 5,
+        marginBottom: 10,
+    },
+    dateButtonText: {
+        color: 'white',
+        textAlign: 'center',
+        fontSize: 16,
+    },
+    selectedDate: {
+        marginBottom: 10,
+        fontSize: 16,
     },
 });
