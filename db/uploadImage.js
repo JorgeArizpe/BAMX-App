@@ -1,6 +1,6 @@
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 
-export const uploadImage = async (image: string, nombre: string, storage: any) => {
+export const uploadImage = async (image, nombre, storage) => {
     
     if (!image) return null;
     

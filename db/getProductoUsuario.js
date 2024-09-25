@@ -1,6 +1,6 @@
 import { doc, getDoc } from 'firebase/firestore';
 
-export const getProductoUsuario = async (db: any, item: any, setProducto: any, setUsuario: any) => {
+export const getProductoUsuario = async (db, item, setProducto, setUsuario) => {
     if (db && item.producto && item.producto.path) {
         try {
             const docRef = doc(db, item.producto.path);
