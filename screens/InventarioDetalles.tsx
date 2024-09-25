@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, FlatList, ActivityIndicator, RefreshControl } from 'react-native';
+import { StyleSheet, View, FlatList, ActivityIndicator, RefreshControl } from 'react-native';
 import { useState, useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { useFirebase } from '../db/FirebaseContext';
