@@ -14,9 +14,6 @@ export const uploadImage = async (image: string, nombre: string, storage: any) =
     return new Promise((resolve, reject) => {
         uploadTask.on(
             'state_changed',
-            (snapshot) => {
-                console.log(snapshot)
-            },
             (error) => {
                 reject(error);
             },

@@ -39,7 +39,7 @@ export default function Historial({ navigation }: any) {
                     </Pressable>
                     <Text style={styles.title}>Historial</Text>
                 </View>
-                <View style={{ marginTop: '20%', marginBottom: '30%', width: '100%' }}>
+                <View style={{ marginTop: '20%', marginBottom: '50%', width: '100%' }}>
                     {
                         data.length > 0 ? (
                             <FlatList 
