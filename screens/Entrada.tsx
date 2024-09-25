@@ -5,6 +5,9 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { useState, useEffect } from 'react';
 import { useFirebase } from '../db/FirebaseContext';
 import { ref, getDownloadURL } from 'firebase/storage';
+import { fetchCategorias } from '../db/fetchCategorias';
+import { fetchProductos } from '../db/fetchProductos';
+
 const background = require('../assets/backgroundMainSmall.png');
 const placeholder = require('../assets/inventarioPlaceholder.png');
 
@@ -37,58 +40,23 @@ export default function Entrada({ navigation }: any) {
     }, []);
 
     useEffect(() => {
-        const fetchCategorias = async () => {
-            try {
-                if (db) {
-                    const docRef = doc(db, 'Inventario', 'Categorias');
-                    const docSnap = await getDoc(docRef);
-                    if (docSnap.exists()) {
-                        const data = docSnap.data().categorias;
-                        const categoriasFormatted = data.map((categoria: string) => ({
-                            label: categoria,
-                            value: categoria
-                        }));
-                        setCategorias(categoriasFormatted);
-                    } else {
-                        console.log("No categories found!");
-                    }
-                }
-            } catch (error) {
-                console.error('Error fetching categorias:', error);
-            }
-        };
-        fetchCategorias();
+        fetchCategorias(db).then(setCategorias);
     }, [db]);
 
     useEffect(() => {
         if (selectedCategoria) {
-            const fetchProductos = async () => {
-                try {
-                    if (db) {
-                        const q = query(collection(db, 'Inventario/Categorias/' + selectedCategoria));
-                        const snapshot = await getDocs(q);
-                        const productosData = snapshot.docs.map(doc => ({
-                            label: doc.data().nombre,
-                            value: doc.id
-                        }));
-                        setProductos(productosData);
-                    }
-                } catch (error) {
-                    console.error('Error fetching products:', error);
-                }
-            };
-            fetchProductos();
+            fetchProductos(db, selectedCategoria).then(setProductos);
         }
     }, [db, selectedCategoria]);
 
     useEffect(() => {
         if (selectedProducto && storage) {
-            const fetchImage = async () => {
-                const storageRef = ref(storage, 'Productos/' + selectedProducto + '.png');
-                const url = await getDownloadURL(storageRef);
+            const storageRef = ref(storage, 'Productos/' + selectedProducto + '.png');
+            getDownloadURL(storageRef).then((url) => {
                 setImage({ uri: url });
-            };
-            fetchImage();
+            }).catch((error) => {
+                console.log(error);
+            });
         } else {
             setImage(placeholder);
         }
@@ -154,7 +122,7 @@ export default function Entrada({ navigation }: any) {
                             )}
                         </View>
                         <TouchableOpacity style={styles.confirmButton} onPress={async () => {
-                            if (donante !== '' && selectedProducto !== '' && cantidad !== 0 && db && currentUser) {
+                            if (donante !== '' && selectedProducto !== '' && cantidad > 0 && db && currentUser) {
                                 try {
                                     const newEntryRef = doc(collection(db, 'Historial'));
                                     await setDoc(newEntryRef, {
@@ -168,9 +136,8 @@ export default function Entrada({ navigation }: any) {
                                     const productoRef = doc(db, `Inventario/Categorias/${selectedCategoria}/${selectedProducto}`);
                                     const productoDoc = await getDoc(productoRef);
                                     if (productoDoc.exists()) {
-                                        const currentQuantity = productoDoc.data().cantActual;
                                         await updateDoc(productoRef, {
-                                            cantActual: currentQuantity + cantidad
+                                            cantActual: productoDoc.data().cantActual + cantidad
                                         });
                                     }
                                     Alert.alert('Entrada', 'Entrada registrada con éxito');

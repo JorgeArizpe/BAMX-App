@@ -1,9 +1,51 @@
 import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Pressable, Alert } from 'react-native';
+import { useEffect, useState } from 'react';
+import { ref, getDownloadURL } from 'firebase/storage';
+import { collection, doc, setDoc, serverTimestamp, getDoc, updateDoc } from 'firebase/firestore';
+import DropDownPicker from 'react-native-dropdown-picker';
+import { fetchCategorias } from '../db/fetchCategorias';
+import { fetchProductos } from '../db/fetchProductos';
+import { useFirebase } from '../db/FirebaseContext';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 const background = require('../assets/backgroundMainSmall.png');
+const placeholder = require('../assets/inventarioPlaceholder.png');
 
 export default function Salida({ navigation }: any) {
+    const { db, storage, auth } = useFirebase();
+    const currentUser = auth?.currentUser;
+    const [categorias, setCategorias] = useState<any[]>([]);  // First dropdown list
+    const [productos, setProductos] = useState<any[]>([]);    // Second dropdown list
+    const [selectedCategoria, setSelectedCategoria] = useState(null); // Selected category
+    const [selectedProducto, setSelectedProducto] = useState(null);   // Selected product
+    const [image, setImage] = useState(placeholder);
+    const [cantidad, setCantidad] = useState(0);
+    const [openCategorias, setOpenCategorias] = useState(false);
+    const [openProductos, setOpenProductos] = useState(false);
+
+    useEffect(() => {
+        fetchCategorias(db).then(setCategorias);
+    }, [db]);
+
+    useEffect(() => {
+        if (selectedCategoria) {
+            fetchProductos(db, selectedCategoria).then(setProductos);
+        }
+    }, [db, selectedCategoria]);
+
+    useEffect(() => {
+        if (selectedProducto && storage) {
+            const storageRef = ref(storage, 'Productos/' + selectedProducto + '.png');
+            getDownloadURL(storageRef).then((url) => {
+                setImage({ uri: url });
+            }).catch((error) => {
+                console.log(error);
+            });
+        } else {
+            setImage(placeholder);
+        }
+    }, [storage, selectedProducto]);
+
     return (
         <View style={styles.container}>
             <ImageBackground source={background} resizeMode='stretch' style={styles.back}>
@@ -11,41 +53,87 @@ export default function Salida({ navigation }: any) {
                     <Pressable onPress={() => navigation.goBack()}>
                         <Ionicons name="arrow-back" style={styles.backArrow} />
                     </Pressable>
-                    <Text style={styles.title}>Entrada de Productos</Text>
+                    <Text style={styles.title}>Salida de Productos</Text>
                 </View>
-                
+
                 <View style={styles.content}>
                     <Image
-                        source={require('../assets/inventarioPlaceholder.png')}
+                        source={image}
                         style={styles.productImage}
                     />
                     <View style={styles.inputContainer}>
-                        <View style={styles.searchInputContainer}>
-                            <TextInput
-                                style={styles.searchInput}
-                                placeholder="Buscar Producto"
-                                placeholderTextColor="#888"
-                            />
-                            <TouchableOpacity style={styles.searchButton}>
-                                <Ionicons name="search" size={24} color="#888" />
+                        <View>
+                            <View style={[styles.searchInputContainer, { zIndex: openCategorias ? 2000 : 0 }]}>
+                                <DropDownPicker
+                                    items={categorias}
+                                    open={openCategorias}
+                                    setOpen={setOpenCategorias}
+                                    value={selectedCategoria}
+                                    setValue={setSelectedCategoria}
+                                    placeholder="Categoría"
+                                    zIndex={2000}
+                                    zIndexInverse={3000}
+                                />
+                            </View>
+                            <View style={[styles.searchInputContainer, { zIndex: openProductos ? 1000 : 0 }]}>
+                                {selectedCategoria && (
+                                    <DropDownPicker
+                                        items={productos}
+                                        open={openProductos}
+                                        setOpen={setOpenProductos}
+                                        value={selectedProducto}
+                                        setValue={setSelectedProducto}
+                                        placeholder="Producto"
+                                        zIndex={1000}
+                                        zIndexInverse={2000}
+                                    />
+                                )}
+                            </View>
+                            <View style={styles.quantityContainer}>
+                                {selectedProducto && (
+                                    <TextInput
+                                        keyboardType='numeric'
+                                        style={styles.quantityInput}
+                                        placeholder="Cantidad de Unidades"
+                                        placeholderTextColor="#888"
+                                        onChangeText={(text) => setCantidad(Number(text))}
+                                    />
+                                )}
+                            </View>
+                            <TouchableOpacity style={styles.confirmButton} onPress={async () => {
+                                if (selectedProducto !== '' && cantidad > 0 && db && currentUser) {
+                                    try {
+                                        const productoRef = doc(db, `Inventario/Categorias/${selectedCategoria}/${selectedProducto}`);
+                                        const productoDoc = await getDoc(productoRef);
+                                        if (productoDoc.exists() && cantidad <= productoDoc.data().cantActual) {
+                                            await updateDoc(productoRef, {
+                                                cantActual: productoDoc.data().cantActual - cantidad
+                                            });
+                                            const newEntryRef = doc(collection(db, 'Historial'));
+                                            await setDoc(newEntryRef, {
+                                                cantidad: cantidad,
+                                                donante: 'n/a',
+                                                fecha: serverTimestamp(),
+                                                producto: doc(db, `Inventario/Categorias/${selectedCategoria}/${selectedProducto}`),
+                                                tipo: false,
+                                                usuario: doc(db, 'Usuarios', currentUser.uid)
+                                            });
+                                            Alert.alert('Salida', 'Salida registrada con éxito')
+                                            navigation.navigate('Home')
+                                        } else {
+                                            Alert.alert('Salida', 'No hay suficientes unidades en el inventario')
+                                        }
+                                    } catch (error) {
+                                        console.error('Error adding entry:', error);
+                                        Alert.alert('Error', 'Hubo un problema al registrar la salida');
+                                    }
+                                } else {
+                                    Alert.alert('Salida', 'Por favor, complete todos los campos')
+                                }
+                            }}>
+                                <Text style={{ fontWeight: 'bold' }}>Confirmar</Text>
                             </TouchableOpacity>
                         </View>
-                        <View style={styles.quantityContainer}>
-                            <TextInput
-                                style={styles.quantityInput}
-                                placeholder="Cantidad de Unidades"
-                                placeholderTextColor="#888"
-                            />
-                            <View style={styles.unitContainer}>
-                                <Text style={styles.unitText}>Kg</Text>
-                            </View>
-                        </View>
-                        <TouchableOpacity style={styles.confirmButton} onPress={() => {
-                            Alert.alert('Salida', 'Salida registrada con éxito')
-                            navigation.navigate('Home')
-                        }}>
-                            <Text style={{fontWeight: 'bold'}}>Confirmar</Text>
-                        </TouchableOpacity>
                     </View>
                 </View>
             </ImageBackground>
