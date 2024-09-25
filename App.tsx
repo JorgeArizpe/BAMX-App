@@ -73,23 +73,28 @@ const screenOptionsStack = ({ navigation }: any) => ({
 
 function CustomDrawerContent(props: any) {
   return (
-    <DrawerContentScrollView {...props}>
+    <DrawerContentScrollView {...props} contentContainerStyle={{ flex: 1 }}>
       <View style={styles.customContent}>
         <Text style={styles.customText}>Bienvenido, {props.name}</Text>
       </View>
 
-      <DrawerItemList {...props} />
+      <View style={{ flex: 1 }}>
+        <DrawerItemList {...props} />
+      </View>
 
       <View style={styles.bottomDrawerSection}>
-        <Pressable style={styles.drawerItem} onPress={() => {
-          signOut(auth)
-            .then(() => {
-              props.navigation.navigate('Login');
-            })
-            .catch((error) => {
-              console.error('Error al cerrar sesión:', error);
-            });
-        }}>
+        <Pressable
+          style={styles.drawerItem}
+          onPress={() => {
+            signOut(auth)
+              .then(() => {
+                props.navigation.navigate('Login');
+              })
+              .catch((error) => {
+                console.error('Error al cerrar sesión:', error);
+              });
+          }}
+        >
           <Ionicons name="log-out" size={24} color={'white'} style={styles.drawerItemIcon} />
           <Text style={styles.drawerItemText}>Cerrar Sesión</Text>
         </Pressable>
@@ -149,14 +154,6 @@ function DrawerNavigator({ route }: any) {
           drawerIcon: ({ size }) => <Ionicons name="pencil" size={size} color={'white'} />
         }}
       />
-      <Drawer.Screen
-        name="Entrada"
-        component={Entrada}
-        options={{
-          headerShown: false,
-          drawerIcon: ({ size }) => <Ionicons name="add-circle-outline" size={size} color={'white'} />
-        }}
-      />
     </Drawer.Navigator>
   );
 }
@@ -192,6 +189,7 @@ export default function Navigation() {
                   ...screenOptionsStack({ navigation }),
                 })}
               />
+              <Stack.Screen name="Entrada" component={Entrada} />
             </>
           ) : (
             <>

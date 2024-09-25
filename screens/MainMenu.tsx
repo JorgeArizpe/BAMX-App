@@ -8,6 +8,9 @@ export default function MainMenu({ navigation }: any) {
             <ImageBackground source={background} resizeMode='cover' style={styles.back}>
                 <Text>Main Menu</Text>
                 {/* Botones temporales */}
+                <Pressable style={styles.button} onPress={() => { navigation.navigate('Entrada') }}>
+                    <Text>Entrada de Producto</Text>
+                </Pressable>
                 <Pressable style={styles.button} onPress={() => { navigation.navigate('Salida') }}>
                     <Text>Salida de Producto</Text>
                 </Pressable>
@@ -37,6 +40,7 @@ const styles = StyleSheet.create({
     },
     button: {
         padding: 10,
+        margin: 10,
         borderRadius: 5,
         alignItems: 'center',
         width: 200,
