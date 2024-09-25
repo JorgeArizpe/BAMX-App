@@ -1,6 +1,6 @@
 import { collection, query, getDocs } from 'firebase/firestore';
 
-export const fetchProductos = async (db: any, selectedCategoria: string) => {
+export const fetchProductos = async (db, selectedCategoria) => {
     try {
         if (db) {
             const q = query(collection(db, 'Inventario/Categorias/' + selectedCategoria));
