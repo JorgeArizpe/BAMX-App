@@ -52,7 +52,6 @@ export default function RegistroProducto({ navigation }: any) {
                 await uploadImage(image, nombre, storage);
                 const productData = {
                     nombre,
-                    categoria: selectedCategoria,
                     unidad,
                     cantActual: cantidad,
                     cantMin: 100,

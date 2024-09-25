@@ -1,18 +1,22 @@
-import { View, StyleSheet, Text, ImageBackground, Pressable, TextInput, Alert } from 'react-native';
+import { View, StyleSheet, Text, ImageBackground, Pressable, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useState } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useFirebase } from '../db/FirebaseContext';
+import { reporte } from '../db/reporte';
 
 const background = require('../assets/backgroundMainSmall.png');
 
 export default function GenerarReporte({ navigation }: any) {
+    const { db } = useFirebase();
 
     const [dateInicio, setDateInicio] = useState(new Date());
     const [dateFin, setDateFin] = useState(new Date());
     const [showPickerInicio, setShowPickerInicio] = useState(false);
     const [showPickerFin, setShowPickerFin] = useState(false);
-    const [titulo, setTitulo] = useState('');
-    const [descripcion, setDescripcion] = useState('');
+    const [titulo, setTitulo] = useState('Titulo');
+    const [descripcion, setDescripcion] = useState('Descripcion');
+    const [isLoading, setIsLoading] = useState(false);
 
     const onChangeInicio = (event: any, selectedDate?: Date) => {
         const currentDate = selectedDate || dateInicio;
@@ -56,7 +60,6 @@ export default function GenerarReporte({ navigation }: any) {
                                         setShowPickerInicio(false);
                                         onChangeInicio(event, selectedDate);
                                     }}
-                                    is24Hour={true}
                                 />
                             )}
                         </View>
@@ -81,7 +84,6 @@ export default function GenerarReporte({ navigation }: any) {
                                         setShowPickerFin(false);
                                         onChangeFin(event, selectedDate);
                                     }}
-                                    is24Hour={true}
                                 />
                             )}
                         </View>
@@ -89,12 +91,26 @@ export default function GenerarReporte({ navigation }: any) {
 
                     <TextInput style={[styles.input, styles.descriptionInput]} placeholder="Descripción" value={descripcion} onChangeText={setDescripcion} />
 
-                    <Pressable style={styles.confirmButton} onPress={() => {
-                        Alert.alert('Reporte', 'Reporte generado con éxito')
-                        navigation.navigate('Home')
-                    }}>
-                        <Text style={styles.confirmButtonText}>Confirmar</Text>
-                    </Pressable>
+                    {isLoading ? (
+                        <View style={styles.loadingContainer}>
+                            <ActivityIndicator size="large" color="#0000ff" />
+                            <Text style={styles.loadingText}>Cargando...</Text>
+                        </View>
+
+                    ) : (
+                        <TouchableOpacity style={styles.confirmButton} onPress={() => {
+                            setIsLoading(true);
+                            reporte(db, dateInicio, dateFin, navigation, titulo, descripcion)
+                                .finally(() => {
+                                    setTitulo('Titulo')
+                                    setDescripcion('Descripcion')
+                                    setIsLoading(false);
+                                })
+                        }}>
+                            <Text style={styles.confirmButtonText}>Confirmar</Text>
+                        </TouchableOpacity>
+                    )}
+
                 </View>
             </ImageBackground >
         </View >
@@ -183,5 +199,15 @@ const styles = StyleSheet.create({
     selectedDate: {
         marginBottom: 10,
         fontSize: 16,
+    },
+    loadingText: {
+        textAlign: 'center',
+        marginTop: 10,
+        fontSize: 16,
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 });

@@ -92,6 +92,7 @@ export default function Entrada({ navigation }: any) {
                                 value={selectedCategoria}
                                 setValue={setSelectedCategoria}
                                 placeholder="Categoría"
+
                                 zIndex={2000}
                                 zIndexInverse={3000}
                             />
@@ -105,6 +106,8 @@ export default function Entrada({ navigation }: any) {
                                     value={selectedProducto}
                                     setValue={setSelectedProducto}
                                     placeholder="Producto"
+                                    searchable={true}
+                                    listMode='MODAL'
                                     zIndex={1000}
                                     zIndexInverse={2000}
                                 />

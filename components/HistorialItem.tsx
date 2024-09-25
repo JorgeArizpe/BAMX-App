@@ -2,7 +2,7 @@ import { View, StyleSheet, Text, Pressable, ActivityIndicator, Alert } from 'rea
 import { useEffect, useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { useFirebase } from '../db/FirebaseContext';
-import { doc, getDoc } from 'firebase/firestore';
+import { getProductoUsuario } from '../db/getProductoUsuario';
 
 export default function HistorialItem({ item }: any) {
     const { db } = useFirebase();
@@ -11,37 +11,9 @@ export default function HistorialItem({ item }: any) {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const getProductoUsuario = async () => {
-            if (db && item.producto && item.producto.path) {
-                try {
-                    const docRef = doc(db, item.producto.path);
-                    const docSnap = await getDoc(docRef);
-                    if (docSnap.exists()) {
-                        setProducto(docSnap.data());
-                    } else {
-                        console.error('No such product document!');
-                    }
-                } catch (error) {
-                    console.error('Error fetching product:', error);
-                }
-            }
 
-            if (db && item.usuario && item.usuario.path) {
-                try {
-                    const userDocRef = doc(db, item.usuario.path);
-                    const userDocSnap = await getDoc(userDocRef);
-                    if (userDocSnap.exists()) {
-                        setUsuario(userDocSnap.data());
-                    } else {
-                        console.error('No such user document!');
-                    }
-                } catch (error) {
-                    console.error('Error fetching user:', error);
-                }
-            }
-            setLoading(false);
-        };
-        getProductoUsuario();
+        getProductoUsuario(db, item, setProducto, setUsuario)
+            .then(() => setLoading(false));
     }, [db, item.producto, item.usuario]);
 
     if (loading) {
