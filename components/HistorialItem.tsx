@@ -33,7 +33,7 @@ export default function HistorialItem({ item }: any) {
     }
 
     const timestamp = formatDistanceToNow(new Date(item.fecha.seconds * 1000), { addSuffix: true });
-    let alerta = `${item.tipo ? 'Ingreso' : 'Salida'}: ${item.cantidad} ${producto.unidad} de ${producto.nombre} \npor ${usuario.name}\n${timestamp}`;
+    let alerta = `${item.tipo }: ${item.cantidad} ${producto.unidad} de ${producto.nombre} \npor ${usuario.name}\n${timestamp}`;
 
     if (item.donante !== 'n/a') {
         alerta += `\nDonante: ${item.donante}`;
@@ -44,7 +44,7 @@ export default function HistorialItem({ item }: any) {
             <Pressable onPress={() => Alert.alert("Historial", alerta)}>
                 <Text style={styles.timestamp}>{timestamp}</Text>
                 <Text style={{ paddingBottom: 10 }}>
-                    {item.tipo ? 'Ingreso:' : 'Salida:'} {item.cantidad} {producto.unidad} de {producto.nombre}
+                    {item.tipo }: {item.cantidad} {producto.unidad} de {producto.nombre}
                 </Text>
             </Pressable>
         </View>

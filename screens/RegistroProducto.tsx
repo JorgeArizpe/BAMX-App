@@ -63,7 +63,7 @@ export default function RegistroProducto({ navigation }: any) {
                     donante: 'n/a',
                     fecha: serverTimestamp(),
                     producto: doc(db, `Inventario/Categorias/${selectedCategoria}/${nombre}`),
-                    tipo: true,
+                    tipo: 'Ingreso',
                     usuario: doc(db, 'Usuarios', currentUser.uid)
                 });
                 Alert.alert('Éxito', 'Producto agregado correctamente');

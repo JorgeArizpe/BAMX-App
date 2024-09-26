@@ -115,7 +115,7 @@ export default function Salida({ navigation }: any) {
                                                 donante: 'n/a',
                                                 fecha: serverTimestamp(),
                                                 producto: doc(db, `Inventario/Categorias/${selectedCategoria}/${selectedProducto}`),
-                                                tipo: false,
+                                                tipo: 'Salida',
                                                 usuario: doc(db, 'Usuarios', currentUser.uid)
                                             });
                                             Alert.alert('Salida', 'Salida registrada con éxito')

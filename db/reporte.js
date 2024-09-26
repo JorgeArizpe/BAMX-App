@@ -57,12 +57,6 @@ export const reporte = async (db, dateInicio, dateFin, navigation, titulo, descr
                         fileContent += `fecha: ${fecha}\n`;
                     } else if (key === 'cantidad') {
                         ;
-                    } else if (key === 'tipo') {
-                        if (docu.tipo === false) {
-                            fileContent += `tipo: Retiro\n`;
-                        } else if (docu.tipo === true) {
-                            fileContent += `tipo: Donacion\n`;
-                        }
                     } else {
                         fileContent += `${key}: ${value}\n`;
                     }

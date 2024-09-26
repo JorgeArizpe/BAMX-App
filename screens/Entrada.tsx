@@ -133,7 +133,7 @@ export default function Entrada({ navigation }: any) {
                                         donante: donante,
                                         fecha: serverTimestamp(),
                                         producto: doc(db, `Inventario/Categorias/${selectedCategoria}/${selectedProducto}`),
-                                        tipo: true,
+                                        tipo: 'Ingreso',
                                         usuario: doc(db, 'Usuarios', currentUser.uid)
                                     });
                                     const productoRef = doc(db, `Inventario/Categorias/${selectedCategoria}/${selectedProducto}`);
