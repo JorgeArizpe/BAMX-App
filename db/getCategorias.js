@@ -1,6 +1,6 @@
 import { doc, getDoc } from "firebase/firestore";
 
-const getCategorias = async () => {
+const getCategorias = async (db) => {
     if (db) {
         const docRef = doc(db, 'Inventario', 'Categorias');
         const docSnap = await getDoc(docRef);
