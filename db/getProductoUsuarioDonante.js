@@ -1,6 +1,6 @@
 import { doc, getDoc } from 'firebase/firestore';
 
-export const getProductoUsuario = async (db, item, setProducto, setUsuario) => {
+export const getProductoUsuarioDonante = async (db, item, setProducto, setUsuario, setDonante) => {
     if (db && item.producto && item.producto.path) {
         try {
             const docRef = doc(db, item.producto.path);
@@ -26,6 +26,20 @@ export const getProductoUsuario = async (db, item, setProducto, setUsuario) => {
             }
         } catch (error) {
             console.error('Error fetching user:', error);
+        }
+    }
+
+    if (db && item.donante && item.donante.path) {
+        try {
+            const donanteDocRef = doc(db, item.donante.path);
+            const donanteDocSnap = await getDoc(donanteDocRef);
+            if (donanteDocSnap.exists()) {
+                setDonante(donanteDocSnap.data());
+            } else {
+                console.error('No such donante document!');
+            }
+        } catch (error) {
+            console.error('Error fetching donante:', error);
         }
     }
 };

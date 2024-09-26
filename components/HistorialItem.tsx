@@ -2,19 +2,20 @@ import { View, StyleSheet, Text, Pressable, ActivityIndicator, Alert } from 'rea
 import { useEffect, useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { useFirebase } from '../db/FirebaseContext';
-import { getProductoUsuario } from '../db/getProductoUsuario';
+import { getProductoUsuarioDonante } from '../db/getProductoUsuarioDonante';
 
 export default function HistorialItem({ item }: any) {
     const { db } = useFirebase();
     const [producto, setProducto] = useState<any>(null);
     const [usuario, setUsuario] = useState<any>(null);
     const [loading, setLoading] = useState(true);
+    const [donante, setDonante] = useState<any>(null);
 
     useEffect(() => {
 
-        getProductoUsuario(db, item, setProducto, setUsuario)
+        getProductoUsuarioDonante(db, item, setProducto, setUsuario, setDonante)
             .then(() => setLoading(false));
-    }, [db, item.producto, item.usuario]);
+    }, [db, item.producto, item.usuario, item.donante]);
 
     if (loading) {
         return (
@@ -35,8 +36,8 @@ export default function HistorialItem({ item }: any) {
     const timestamp = formatDistanceToNow(new Date(item.fecha.seconds * 1000), { addSuffix: true });
     let alerta = `${item.tipo }: ${item.cantidad} ${producto.unidad} de ${producto.nombre} \npor ${usuario.name}\n${timestamp}`;
 
-    if (item.donante !== 'n/a') {
-        alerta += `\nDonante: ${item.donante}`;
+    if (donante !== 'n/a') {
+        alerta += `\nDonante: ${donante.nombre}`;
     }
 
     return (

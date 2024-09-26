@@ -1,12 +1,13 @@
 import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Pressable, Alert, Keyboard } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { doc, getDoc, query, collection, getDocs, setDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, collection, setDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { useState, useEffect } from 'react';
 import { useFirebase } from '../db/FirebaseContext';
 import { ref, getDownloadURL } from 'firebase/storage';
 import { fetchCategorias } from '../db/fetchCategorias';
 import { fetchProductos } from '../db/fetchProductos';
+import { fetchDonantes } from '../db/fetchDonantes';
 
 const background = require('../assets/backgroundMainSmall.png');
 const placeholder = require('../assets/inventarioPlaceholder.png');
@@ -21,10 +22,12 @@ export default function Entrada({ navigation }: any) {
     const [selectedCategoria, setSelectedCategoria] = useState(null); // Selected category
     const [selectedProducto, setSelectedProducto] = useState(null);   // Selected product
     const [cantidad, setCantidad] = useState(0);
-    const [donante, setDonante] = useState('');
+    const [donante, setDonante] = useState<any[]>([]);
     const [image, setImage] = useState(placeholder);
     const [openCategorias, setOpenCategorias] = useState(false);
     const [openProductos, setOpenProductos] = useState(false);
+    const [openDonante, setOpenDonante] = useState(false);
+    const [selectedDonante, setSelectedDonante] = useState(null);
 
     useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
@@ -38,6 +41,10 @@ export default function Entrada({ navigation }: any) {
             keyboardDidShowListener.remove();
         };
     }, []);
+
+    useEffect(() => {
+        fetchDonantes(db).then(setDonante);
+    }, [db]);
 
     useEffect(() => {
         fetchCategorias(db).then(setCategorias);
@@ -78,12 +85,19 @@ export default function Entrada({ navigation }: any) {
                         style={styles.productImage}
                     />
                     <View style={styles.inputContainer}>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Donante"
-                            placeholderTextColor="#888"
-                            onChangeText={(text) => setDonante(text)}
-                        />
+                        <View style={[styles.searchInputContainer, { zIndex: openDonante ? 3000 : 10 }]}>
+                            <DropDownPicker
+                                items={donante}
+                                open={openDonante}
+                                setOpen={setOpenDonante}
+                                value={selectedDonante}
+                                setValue={setSelectedDonante}
+                                placeholder="Donante"
+                                zIndex={2000}
+                                zIndexInverse={3000}
+                            />
+                        </View>
+
                         <View style={[styles.searchInputContainer, { zIndex: openCategorias ? 2000 : 0 }]}>
                             <DropDownPicker
                                 items={categorias}
@@ -125,12 +139,12 @@ export default function Entrada({ navigation }: any) {
                             )}
                         </View>
                         <TouchableOpacity style={styles.confirmButton} onPress={async () => {
-                            if (donante !== '' && selectedProducto !== '' && cantidad > 0 && db && currentUser) {
+                            if (selectedDonante !== '' && selectedProducto !== '' && cantidad > 0 && db && currentUser) {
                                 try {
                                     const newEntryRef = doc(collection(db, 'Historial'));
                                     await setDoc(newEntryRef, {
                                         cantidad: cantidad,
-                                        donante: donante,
+                                        donante: doc(db, `Donantes/${selectedDonante}`),
                                         fecha: serverTimestamp(),
                                         producto: doc(db, `Inventario/Categorias/${selectedCategoria}/${selectedProducto}`),
                                         tipo: 'Ingreso',

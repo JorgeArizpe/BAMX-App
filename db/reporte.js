@@ -55,6 +55,16 @@ export const reporte = async (db, dateInicio, dateFin, navigation, titulo, descr
                     } else if (key === 'fecha') {
                         const fecha = docu.fecha?.toDate().toLocaleDateString() || 'N/A';
                         fileContent += `fecha: ${fecha}\n`;
+                    } else if (key === 'donante') {
+                        const donantePath = docu.donante?.path || 'N/A';
+                        if (donantePath !== 'N/A') {
+                            const docRef = doc(db, donantePath);
+                            const docSnap = await getDoc(docRef);
+                            const donanteNombre = docSnap.data()?.nombre || 'N/A';
+                            fileContent += `donante: ${donanteNombre}\n`;
+                        } else {
+                            fileContent += `donante: N/A\n`;
+                        }
                     } else if (key === 'cantidad') {
                         ;
                     } else {
