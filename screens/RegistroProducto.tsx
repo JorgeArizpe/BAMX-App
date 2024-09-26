@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Pressable, Alert, Image } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { collection, addDoc, setDoc, doc, serverTimestamp } from 'firebase/firestore';
+import { collection, setDoc, doc, serverTimestamp } from 'firebase/firestore';
 import * as ImagePicker from 'expo-image-picker';
 import { useFirebase } from '../db/FirebaseContext';
 import { fetchCategorias } from '../db/fetchCategorias';
@@ -14,6 +14,9 @@ export default function RegistroProducto({ navigation }: any) {
     const { db, storage, auth } = useFirebase();
     const currentUser = auth?.currentUser;
 
+    const unidades = ['kg', 'lt', 'pzas'];
+    const [selectedUnidad, setSelectedUnidad] = useState('');
+    const [openUnidades, setOpenUnidades] = useState(false);
     const [nombre, setNombre] = useState('');
     const [unidad, setUnidad] = useState('');
     const [openCategorias, setOpenCategorias] = useState(false);
@@ -123,25 +126,33 @@ export default function RegistroProducto({ navigation }: any) {
                             />
                         </View>
                         <View>
-                            <TextInput
-                                style={styles.input}
-                                placeholder="Unidad"
-                                placeholderTextColor="#888"
-                                onChangeText={(text) => setUnidad(text)}
-                            />
+                            <View style={[styles.searchInputContainer, { zIndex: openUnidades ? 3000 : 10 }]}>
+                                <DropDownPicker
+                                    items={unidades.map(unidad => ({ label: unidad, value: unidad }))}
+                                    open={openUnidades}
+                                    setOpen={setOpenUnidades}
+                                    value={selectedUnidad}
+                                    setValue={setSelectedUnidad}
+                                    placeholder="Unidad"
+                                    zIndex={2000}
+                                    zIndexInverse={3000}
+                                />
+                            </View>
                         </View>
                         <View>
-                            <TextInput
-                                style={styles.input}
-                                keyboardType='numeric'
-                                placeholder="Cantidad"
-                                placeholderTextColor="#888"
-                                onChangeText={(text) => setCantidad(parseInt(text))}
-                            />
+                            {selectedUnidad && (
+                                <TextInput
+                                    style={styles.input}
+                                    keyboardType='numeric'
+                                    placeholder="Cantidad"
+                                    placeholderTextColor="#888"
+                                    onChangeText={(text) => setCantidad(parseInt(text))}
+                                />
+                            )}
                         </View>
                     </View>
                     <View style={styles.addButtonContainer}>
-                        <TouchableOpacity style={[styles.addButton, { zIndex: openCategorias ? -1 : 1000 }]} onPress={handleAddProduct}>
+                        <TouchableOpacity style={[styles.addButton, { zIndex: openCategorias || openUnidades ? -1 : 1000 }]} onPress={handleAddProduct}>
                             <Text style={{ fontWeight: 'bold' }}>Agregar</Text>
                         </TouchableOpacity>
                     </View>
