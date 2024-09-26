@@ -15,10 +15,9 @@ export default function RegistroProducto({ navigation }: any) {
     const currentUser = auth?.currentUser;
 
     const unidades = ['kg', 'lt', 'pzas'];
-    const [selectedUnidad, setSelectedUnidad] = useState('');
+    const [selectedUnidad, setSelectedUnidad] = useState(null);
     const [openUnidades, setOpenUnidades] = useState(false);
     const [nombre, setNombre] = useState('');
-    const [unidad, setUnidad] = useState('');
     const [openCategorias, setOpenCategorias] = useState(false);
     const [selectedCategoria, setSelectedCategoria] = useState(null);
     const [categorias, setCategorias] = useState([]);
@@ -45,7 +44,7 @@ export default function RegistroProducto({ navigation }: any) {
     }, [db]);
 
     const handleAddProduct = async () => {
-        if (nombre === '' || selectedCategoria === null || unidad === '' || cantidad === 0) {
+        if (nombre === '' || selectedCategoria === null || selectedUnidad === null || cantidad === 0) {
             Alert.alert('Error', 'Por favor, completa todos los campos.');
             return;
         }
@@ -55,7 +54,7 @@ export default function RegistroProducto({ navigation }: any) {
                 await uploadImage(image, nombre, storage);
                 const productData = {
                     nombre,
-                    unidad,
+                    unidad: selectedUnidad,
                     cantActual: cantidad,
                     cantMin: 100,
                 };

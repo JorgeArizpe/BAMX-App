@@ -28,50 +28,26 @@ export const reporte = async (db, dateInicio, dateFin, navigation, titulo, descr
         for (const docu of documents) {
             fileContent += `ID: ${docu.id}\n`;
 
-            // Loop over each key-value pair in the document
-            for (const [key, value] of Object.entries(docu)) {
-                if (key !== 'id') {
-                    if (key === 'producto') {
-                        const productoPath = docu.producto?.path || 'N/A';
-                        if (productoPath !== 'N/A') {
-                            const docRef = doc(db, productoPath);
-                            const docSnap = await getDoc(docRef);
-                            const productoNombre = docSnap.data()?.nombre || 'N/A';
-                            fileContent += `producto: ${productoNombre}\n`;
-                            fileContent += `cantidad: ${docu.cantidad} ${docSnap.data()?.unidad}\n`;
-                        } else {
-                            fileContent += `producto: N/A\n`;
-                        }
-                    } else if (key === 'usuario') {
-                        const usuarioPath = docu.usuario?.path || 'N/A';
-                        if (usuarioPath !== 'N/A') {
-                            const docRef = doc(db, usuarioPath);
-                            const docSnap = await getDoc(docRef);
-                            const usuarioNombre = docSnap.data()?.name || 'N/A';
-                            fileContent += `usuario: ${usuarioNombre}\n`;
-                        } else {
-                            fileContent += `usuario: N/A\n`;
-                        }
-                    } else if (key === 'fecha') {
-                        const fecha = docu.fecha?.toDate().toLocaleDateString() || 'N/A';
-                        fileContent += `fecha: ${fecha}\n`;
-                    } else if (key === 'donante') {
-                        const donantePath = docu.donante?.path || 'N/A';
-                        if (donantePath !== 'N/A') {
-                            const docRef = doc(db, donantePath);
-                            const docSnap = await getDoc(docRef);
-                            const donanteNombre = docSnap.data()?.nombre || 'N/A';
-                            fileContent += `donante: ${donanteNombre}\n`;
-                        } else {
-                            fileContent += `donante: N/A\n`;
-                        }
-                    } else if (key === 'cantidad') {
-                        ;
-                    } else {
-                        fileContent += `${key}: ${value}\n`;
-                    }
-                }
-            }
+            const fecha = docu.fecha?.toDate().toLocaleDateString() || 'N/A';
+            fileContent += `fecha: ${fecha}\n`;
+            fileContent += `Tipo: ${docu.tipo}\n`;
+
+            var docRef = doc(db, docu.producto.path);
+            var docSnap = await getDoc(docRef);
+            const productoNombre = docSnap.data()?.nombre || 'N/A';
+            fileContent += `producto: ${productoNombre}\n`;
+            fileContent += `cantidad: ${docu.cantidad} ${docSnap.data()?.unidad}\n`;
+
+            docRef = doc(db, docu.usuario.path);
+            docSnap = await getDoc(docRef);
+            const usuarioNombre = docSnap.data()?.name || 'N/A';
+            fileContent += `usuario: ${usuarioNombre}\n`;
+
+            docRef = doc(db, docu.donante.path);
+            docSnap = await getDoc(docRef);
+            const donanteNombre = docSnap.data()?.nombre || 'N/A';
+            fileContent += `donante: ${donanteNombre}\n`;
+
             fileContent += '\n';
         }
 
