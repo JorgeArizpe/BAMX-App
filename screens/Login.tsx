@@ -21,7 +21,7 @@ export default function Login({ navigation }: any) {
                     console.log('Usuario autenticado:', user);
                     navigation.reset({
                         index: 0,
-                        routes: [{ name: 'Main' }],
+                        routes: [{ name: 'MainMenu' }],
                     });
                 })
                 .catch((error) => {
@@ -43,7 +43,7 @@ export default function Login({ navigation }: any) {
     return (
         <View style={styles.container}>
             <ImageBackground source={background} resizeMode='cover' style={styles.back}>
-                <Image source={logo} style={{ width: 150, height: 150, resizeMode: 'contain', margin: 20, }} />
+                <Image source={logo} style={styles.logo} />
                 <TextInput
                     style={styles.input}
                     placeholder='Email'
@@ -64,7 +64,7 @@ export default function Login({ navigation }: any) {
                     onPress={() => { navigation.navigate('CreateAccount') }}>
                     <Text style={{ color: 'black' }}>CREAR CUENTA</Text>
                 </Pressable>
-                <Image source={text_logo} style={{ width: 150, height: 80, resizeMode: 'contain', marginBottom: 50 }} />
+                <Image source={text_logo} style={styles.text_logo} />
             </ImageBackground>
             <StatusBar style="auto" />
         </View>
@@ -95,5 +95,17 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 10,
         width: 200,
+    },
+    logo: {
+        width: 150,
+        height: 150,
+        resizeMode: 'contain',
+        margin: 20,
+    },
+    text_logo: {
+        width: 150,
+        height: 80,
+        resizeMode: 'contain',
+        marginBottom: 50,
     },
 });
