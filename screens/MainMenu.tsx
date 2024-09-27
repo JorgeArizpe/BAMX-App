@@ -31,6 +31,9 @@ export default function MainMenu({ navigation }: any) {
                     <Pressable style={styles.button} onPress={() => { navigation.navigate('Historial') }}>
                         <Text>Historial</Text>
                     </Pressable>
+                    <Pressable style={styles.button} onPress={() => { navigation.navigate('RegistroDonante') }}>
+                        <Text>Registro de Donantes</Text>
+                    </Pressable>
                     <Pressable style={styles.button} onPress={() => { if (auth) signOut(auth) }}>
                         <Text>Logout</Text>
                     </Pressable>
@@ -64,7 +67,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'lightblue',
     },
     logo: {
-        marginTop: '20%',
+        marginTop: '15%',
         width: 150,
         height: 150,
         resizeMode: 'contain',
@@ -72,6 +75,7 @@ const styles = StyleSheet.create({
     },
     welcome: {
         fontSize: 20,
+        fontWeight: 'bold',
         textAlign: 'center',
     },
     menu: {
