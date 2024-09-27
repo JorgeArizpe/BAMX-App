@@ -1,4 +1,4 @@
-import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Pressable, Alert, Keyboard } from 'react-native';
+import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Pressable, Alert, Keyboard, ActivityIndicator } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { doc, getDoc, collection, setDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -28,6 +28,7 @@ export default function Entrada({ navigation }: any) {
     const [openProductos, setOpenProductos] = useState(false);
     const [openDonante, setOpenDonante] = useState(false);
     const [selectedDonante, setSelectedDonante] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
@@ -138,37 +139,42 @@ export default function Entrada({ navigation }: any) {
                                 />
                             )}
                         </View>
-                        <TouchableOpacity style={styles.confirmButton} onPress={async () => {
-                            if (selectedDonante !== '' && selectedProducto !== '' && cantidad > 0 && db && currentUser) {
-                                try {
-                                    const newEntryRef = doc(collection(db, 'Historial'));
-                                    await setDoc(newEntryRef, {
-                                        cantidad: cantidad,
-                                        donante: doc(db, `Donantes/${selectedDonante}`),
-                                        fecha: serverTimestamp(),
-                                        producto: doc(db, `Inventario/Categorias/${selectedCategoria}/${selectedProducto}`),
-                                        tipo: 'Ingreso',
-                                        usuario: doc(db, 'Usuarios', currentUser.uid)
-                                    });
-                                    const productoRef = doc(db, `Inventario/Categorias/${selectedCategoria}/${selectedProducto}`);
-                                    const productoDoc = await getDoc(productoRef);
-                                    if (productoDoc.exists()) {
-                                        await updateDoc(productoRef, {
-                                            cantActual: productoDoc.data().cantActual + cantidad
+                        {isLoading ? <ActivityIndicator size="small" color="#0000ff" /> :
+                            <TouchableOpacity style={styles.confirmButton} onPress={async () => {
+                                if (selectedDonante !== '' && selectedProducto !== '' && cantidad > 0 && db && currentUser) {
+                                    setIsLoading(true);
+                                    try {
+                                        const newEntryRef = doc(collection(db, 'Historial'));
+                                        await setDoc(newEntryRef, {
+                                            cantidad: cantidad,
+                                            donante: doc(db, `Donantes/${selectedDonante}`),
+                                            fecha: serverTimestamp(),
+                                            producto: doc(db, `Inventario/Categorias/${selectedCategoria}/${selectedProducto}`),
+                                            tipo: 'Ingreso',
+                                            usuario: doc(db, 'Usuarios', currentUser.uid)
                                         });
+                                        const productoRef = doc(db, `Inventario/Categorias/${selectedCategoria}/${selectedProducto}`);
+                                        const productoDoc = await getDoc(productoRef);
+                                        if (productoDoc.exists()) {
+                                            await updateDoc(productoRef, {
+                                                cantActual: productoDoc.data().cantActual + cantidad
+                                            });
+                                        }
+                                        Alert.alert('Entrada', 'Entrada registrada con éxito');
+                                        navigation.navigate('MainMenu');
+                                        setIsLoading(false);
+                                    } catch (error) {
+                                        console.error('Error adding entry:', error);
+                                        Alert.alert('Error', 'Hubo un problema al registrar la entrada');
+                                        setIsLoading(false);
                                     }
-                                    Alert.alert('Entrada', 'Entrada registrada con éxito');
-                                    navigation.navigate('Home');
-                                } catch (error) {
-                                    console.error('Error adding entry:', error);
-                                    Alert.alert('Error', 'Hubo un problema al registrar la entrada');
+                                } else {
+                                    Alert.alert('Entrada', 'Por favor, complete todos los campos')
                                 }
-                            } else {
-                                Alert.alert('Entrada', 'Por favor, complete todos los campos')
-                            }
-                        }}>
-                            <Text style={{ fontWeight: 'bold' }}>Confirmar</Text>
-                        </TouchableOpacity>
+                            }}>
+                                <Text style={{ fontWeight: 'bold' }}>Confirmar</Text>
+                            </TouchableOpacity>
+                        }
                     </View>
                 </View>
                 {!isKeyboardVisible ? (

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Pressable, Alert, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Pressable, Alert, Image, ActivityIndicator } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { collection, setDoc, doc, serverTimestamp } from 'firebase/firestore';
@@ -23,7 +23,7 @@ export default function RegistroProducto({ navigation }: any) {
     const [categorias, setCategorias] = useState([]);
     const [image, setImage] = useState('');
     const [cantidad, setCantidad] = useState(0);
-
+    const [isLoading, setIsLoading] = useState(false);
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -50,6 +50,7 @@ export default function RegistroProducto({ navigation }: any) {
         }
 
         try {
+            setIsLoading(true);
             if (db && storage && currentUser) {
                 await uploadImage(image, nombre, storage);
                 const productData = {
@@ -69,11 +70,13 @@ export default function RegistroProducto({ navigation }: any) {
                     usuario: doc(db, 'Usuarios', currentUser.uid)
                 });
                 Alert.alert('Éxito', 'Producto agregado correctamente');
-                navigation.navigate('Home');
+                navigation.navigate('MainMenu');
+                setIsLoading(false);
             }
         } catch (error) {
             console.error('Error adding product: ', error);
             Alert.alert('Error', 'No se pudo agregar el producto. Por favor, intenta de nuevo.');
+            setIsLoading(false);
         }
     };
 
@@ -151,9 +154,11 @@ export default function RegistroProducto({ navigation }: any) {
                         </View>
                     </View>
                     <View style={styles.addButtonContainer}>
-                        <TouchableOpacity style={[styles.addButton, { zIndex: openCategorias || openUnidades ? -1 : 1000 }]} onPress={handleAddProduct}>
-                            <Text style={{ fontWeight: 'bold' }}>Agregar</Text>
-                        </TouchableOpacity>
+                        {isLoading ? <ActivityIndicator size="small" color="#0000ff" /> :
+                            <TouchableOpacity style={[styles.addButton, { zIndex: openCategorias || openUnidades ? -1 : 1000 }]} onPress={handleAddProduct}>
+                                <Text style={{ fontWeight: 'bold' }}>Agregar</Text>
+                            </TouchableOpacity>
+                        }
                     </View>
                 </View>
             </ImageBackground>

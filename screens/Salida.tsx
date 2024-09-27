@@ -1,4 +1,4 @@
-import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Pressable, Alert } from 'react-native';
+import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Pressable, Alert, ActivityIndicator } from 'react-native';
 import { useEffect, useState } from 'react';
 import { ref, getDownloadURL } from 'firebase/storage';
 import { collection, doc, setDoc, serverTimestamp, getDoc, updateDoc } from 'firebase/firestore';
@@ -22,6 +22,7 @@ export default function Salida({ navigation }: any) {
     const [cantidad, setCantidad] = useState(0);
     const [openCategorias, setOpenCategorias] = useState(false);
     const [openProductos, setOpenProductos] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         fetchCategorias(db).then(setCategorias);
@@ -86,6 +87,8 @@ export default function Salida({ navigation }: any) {
                                         placeholder="Producto"
                                         zIndex={1000}
                                         zIndexInverse={2000}
+                                        searchable={true}
+                                        listMode='MODAL'
                                     />
                                 )}
                             </View>
@@ -100,39 +103,44 @@ export default function Salida({ navigation }: any) {
                                     />
                                 )}
                             </View>
-                            <TouchableOpacity style={styles.confirmButton} onPress={async () => {
-                                if (selectedProducto !== '' && cantidad > 0 && db && currentUser) {
-                                    try {
-                                        const productoRef = doc(db, `Inventario/Categorias/${selectedCategoria}/${selectedProducto}`);
-                                        const productoDoc = await getDoc(productoRef);
-                                        if (productoDoc.exists() && cantidad <= productoDoc.data().cantActual) {
-                                            await updateDoc(productoRef, {
-                                                cantActual: productoDoc.data().cantActual - cantidad
-                                            });
-                                            const newEntryRef = doc(collection(db, 'Historial'));
-                                            await setDoc(newEntryRef, {
-                                                cantidad: cantidad,
-                                                donante: 'n/a',
-                                                fecha: serverTimestamp(),
-                                                producto: doc(db, `Inventario/Categorias/${selectedCategoria}/${selectedProducto}`),
-                                                tipo: 'Salida',
-                                                usuario: doc(db, 'Usuarios', currentUser.uid)
-                                            });
-                                            Alert.alert('Salida', 'Salida registrada con éxito')
-                                            navigation.navigate('Home')
-                                        } else {
-                                            Alert.alert('Salida', 'No hay suficientes unidades en el inventario')
+                            {isLoading ? <ActivityIndicator size="small" color="#0000ff" /> :
+                                <TouchableOpacity style={styles.confirmButton} onPress={async () => {
+                                    if (selectedProducto !== '' && cantidad > 0 && db && currentUser) {
+                                        setIsLoading(true);
+                                        try {
+                                            const productoRef = doc(db, `Inventario/Categorias/${selectedCategoria}/${selectedProducto}`);
+                                            const productoDoc = await getDoc(productoRef);
+                                            if (productoDoc.exists() && cantidad <= productoDoc.data().cantActual) {
+                                                await updateDoc(productoRef, {
+                                                    cantActual: productoDoc.data().cantActual - cantidad
+                                                });
+                                                const newEntryRef = doc(collection(db, 'Historial'));
+                                                await setDoc(newEntryRef, {
+                                                    cantidad: cantidad,
+                                                    donante: 'n/a',
+                                                    fecha: serverTimestamp(),
+                                                    producto: doc(db, `Inventario/Categorias/${selectedCategoria}/${selectedProducto}`),
+                                                    tipo: 'Salida',
+                                                    usuario: doc(db, 'Usuarios', currentUser.uid)
+                                                });
+                                                Alert.alert('Salida', 'Salida registrada con éxito')
+                                                navigation.navigate('MainMenu')
+                                                setIsLoading(false);
+                                            } else {
+                                                Alert.alert('Salida', 'No hay suficientes unidades en el inventario')
+                                            }
+                                        } catch (error) {
+                                            console.error('Error adding entry:', error);
+                                            Alert.alert('Error', 'Hubo un problema al registrar la salida');
+                                            setIsLoading(false);
                                         }
-                                    } catch (error) {
-                                        console.error('Error adding entry:', error);
-                                        Alert.alert('Error', 'Hubo un problema al registrar la salida');
+                                    } else {
+                                        Alert.alert('Salida', 'Por favor, complete todos los campos')
                                     }
-                                } else {
-                                    Alert.alert('Salida', 'Por favor, complete todos los campos')
-                                }
-                            }}>
-                                <Text style={{ fontWeight: 'bold' }}>Confirmar</Text>
-                            </TouchableOpacity>
+                                }}>
+                                    <Text style={{ fontWeight: 'bold' }}>Confirmar</Text>
+                                </TouchableOpacity>
+                            }
                         </View>
                     </View>
                 </View>

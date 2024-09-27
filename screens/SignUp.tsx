@@ -75,7 +75,7 @@ export default function SignUp({ navigation }: any) {
                                                 email: email,
                                             });
                                             console.log('Usuario creado con éxito');
-                                            navigation.navigate('Home');
+                                            navigation.navigate('MainMenu');
                                         }
                                     })
                                     .catch((error) => {

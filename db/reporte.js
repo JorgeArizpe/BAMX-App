@@ -66,7 +66,7 @@ export const reporte = async (db, dateInicio, dateFin, navigation, titulo, descr
             Alert.alert('Error', 'Compartir no está disponible en este dispositivo');
         }
 
-        navigation.navigate('Home');
+        navigation.navigate('MainMenu');
     } catch (error) {
         console.error('Error generating report:', error);
         Alert.alert('Error', 'Hubo un problema al generar el reporte.');

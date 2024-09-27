@@ -40,7 +40,7 @@ const screenOptions = ({ navigation }: any) => ({
     </View>
   ),
   headerRight: () => (
-    <Pressable onPress={() => navigation.navigate('Home')}>
+    <Pressable onPress={() => navigation.navigate('MainMenu')}>
       <Image
         source={require('./assets/manzana_logo.png')}
         style={styles.headerRightImage}
@@ -75,7 +75,7 @@ export default function Navigation() {
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           {user ? (
             <>
-              <Stack.Screen name="Main" component={MainMenu} initialParams={{ name: user.displayName }} />
+              <Stack.Screen name="MainMenu" component={MainMenu} initialParams={{ name: user.displayName }} />
               <Stack.Screen name="RegistroProducto" component={RegistroProducto} />
               <Stack.Screen name="Salida" component={Salida} />
               <Stack.Screen name="InventarioDetalles" component={InventarioDetalles} options={({ navigation }) => ({ ...screenOptions({ navigation }) })} />
