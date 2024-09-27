@@ -1,43 +1,86 @@
 import { StyleSheet, View, FlatList, ActivityIndicator, RefreshControl } from 'react-native';
+import DropDownPicker from 'react-native-dropdown-picker';
 import { useState, useEffect } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
 import { useFirebase } from '../db/FirebaseContext';
 import InventoryItem from '../components/InventoryItem';
+import { getProductos } from '../db/getProductos';
 
 export default function InventarioDetalles({ navigation, route }: any) {
     const { db } = useFirebase();
     const { title } = route.params;
-    const [productos, setProductos] = useState<any[]>([]);
 
+    const [productosFormated, setProductosFormated] = useState<any[]>([]);
+    const [productos, setProductos] = useState<any[]>([]);
+    const [openProductos, setOpenProductos] = useState(false);
+    const [selectedProducto, setSelectedProducto] = useState<string | null>(null);
     const [refreshing, setRefreshing] = useState(false);
-    const getProductos = async () => {
-        if (db) {
-        const querySnapshot = await getDocs(collection(db, `/Inventario/Categorias/${title}`));
-        const productos = querySnapshot.docs.map(doc => ({
-            id: doc.id,
-                ...doc.data()
-            }));
-            setProductos(productos);
-        }
-    };
+    const [loading, setLoading] = useState(true);
+
     const onRefresh = async () => {
         setRefreshing(true);
-        await getProductos();
-        setRefreshing(false);
+        await getProductos(setProductos, db, title).then(() => {
+            setProductosFormated([
+                { label: "Show All", value: null },
+                ...productos.map(producto => ({ label: producto.nombre, value: producto.id }))
+            ]);
+            setRefreshing(false);
+        });
     };
 
     useEffect(() => {
-        getProductos();
+        getProductos(setProductos, db, title)
     }, [db]);
 
+    useEffect(() => {
+        setProductosFormated([
+            { label: "Show All", value: null },
+            ...productos.map(producto => ({ label: producto.nombre, value: producto.id }))
+        ]);
+        setLoading(false);
+    }, [productos]);
+
+    const selectedProductData = productos.find(producto => producto.id === selectedProducto);
 
     return (
         <View style={styles.container}>
-            {
-                productos.length > 0 ?
+            {loading ? <></> : (
+                <DropDownPicker
+                    items={productosFormated}
+                    open={openProductos}
+                    setOpen={setOpenProductos}
+                    value={selectedProducto}
+                    setValue={setSelectedProducto}
+                    placeholder="Producto"
+                    searchable={true}
+                    listMode='MODAL'
+                    zIndex={1000}
+                    zIndexInverse={2000}
+                />
+            )}
+
+            {selectedProducto ? (
+                selectedProductData ? (
+                    <InventoryItem
+                        nombre={selectedProductData.nombre}
+                        cantActual={selectedProductData.cantActual}
+                        unidad={selectedProductData.unidad}
+                        cantMin={selectedProductData.cantMin}
+                    />
+                ) : (
+                    <ActivityIndicator size="large" color="#0000ff" />
+                )
+            ) : (
+                productos.length > 0 ? (
                     <FlatList
                         data={productos}
-                        renderItem={({ item }) => <InventoryItem nombre={item.nombre} cantActual={item.cantActual} unidad={item.unidad} cantMin={item.cantMin} />}
+                        renderItem={({ item }) => (
+                            <InventoryItem
+                                nombre={item.nombre}
+                                cantActual={item.cantActual}
+                                unidad={item.unidad}
+                                cantMin={item.cantMin}
+                            />
+                        )}
                         refreshControl={
                             <RefreshControl
                                 refreshing={refreshing}
@@ -45,9 +88,10 @@ export default function InventarioDetalles({ navigation, route }: any) {
                             />
                         }
                     />
-                    :
+                ) : (
                     <ActivityIndicator size="large" color="#0000ff" />
-            }
+                )
+            )}
         </View>
     );
 }

@@ -117,7 +117,6 @@ export default function Entrada({ navigation }: any) {
                                 value={selectedCategoria}
                                 setValue={setSelectedCategoria}
                                 placeholder="Categoría"
-
                                 zIndex={2000}
                                 zIndexInverse={3000}
                             />
