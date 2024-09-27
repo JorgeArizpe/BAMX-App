@@ -1,9 +1,8 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
-import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import { View, Text, StyleSheet, Pressable, Image } from 'react-native';
 import { initializeApp } from 'firebase/app';
-import { initializeAuth, getReactNativePersistence, onAuthStateChanged, signOut } from 'firebase/auth';
+import { initializeAuth, getReactNativePersistence, onAuthStateChanged } from 'firebase/auth';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
@@ -30,25 +29,9 @@ const auth = initializeAuth(app, {
 const db = getFirestore(app);
 const storage = getStorage(app);
 const Stack = createNativeStackNavigator();
-const Drawer = createDrawerNavigator();
 
-const screenOptionsDrawer = ({ navigation }: any) => ({
-  headerLeft: () => (
-    <Pressable onPress={() => navigation.goBack()}>
-      <Ionicons name="arrow-back" style={styles.backArrow} />
-    </Pressable>
-  ),
-  headerRight: () => (
-    <Pressable onPress={() => navigation.navigate('Home')}>
-      <Image
-        source={require('./assets/manzana_logo.png')}
-        style={styles.headerRightImage}
-      />
-    </Pressable>
-  ),
-});
 
-const screenOptionsStack = ({ navigation }: any) => ({
+const screenOptions = ({ navigation }: any) => ({
   headerBackVisible: false,
   headerShown: true,
   headerTitle: () => (
@@ -71,93 +54,6 @@ const screenOptionsStack = ({ navigation }: any) => ({
   ),
 });
 
-function CustomDrawerContent(props: any) {
-  return (
-    <DrawerContentScrollView {...props} contentContainerStyle={{ flex: 1 }}>
-      <View style={styles.customContent}>
-        <Text style={styles.customText}>Bienvenido, {props.name}</Text>
-      </View>
-
-      <View style={{ flex: 1 }}>
-        <DrawerItemList {...props} />
-      </View>
-
-      <View style={styles.bottomDrawerSection}>
-        <Pressable
-          style={styles.drawerItem}
-          onPress={() => {
-            signOut(auth)
-              .then(() => {
-                props.navigation.navigate('Login');
-              })
-              .catch((error) => {
-                console.error('Error al cerrar sesión:', error);
-              });
-          }}
-        >
-          <Ionicons name="log-out" size={24} color={'white'} style={styles.drawerItemIcon} />
-          <Text style={styles.drawerItemText}>Cerrar Sesión</Text>
-        </Pressable>
-      </View>
-    </DrawerContentScrollView>
-  );
-}
-
-function DrawerNavigator({ route }: any) {
-  const { name } = route.params;
-  return (
-    <Drawer.Navigator
-      initialRouteName="Home"
-      drawerContent={(props) => <CustomDrawerContent {...props} name={name} />}
-      screenOptions={{
-        drawerStyle: { backgroundColor: '#CE0F2C', width: 240, borderTopRightRadius: 30, borderBottomRightRadius: 30 },
-        drawerLabelStyle: { color: 'white', fontSize: 13, flexWrap: 'wrap' },
-        headerTintColor: '#fff',
-      }}
-    >
-      <Drawer.Screen
-        name="Home"
-        component={MainMenu}
-        options={{
-          headerTitle: ' ',
-          headerStyle: { backgroundColor: '#CE0F2C', height: 100 },
-          drawerIcon: ({ size }) => <Ionicons name="home" size={size} color={'white'} />
-        }}
-      />
-      <Drawer.Screen
-        name="Inventario"
-        component={Inventario}
-        options={({ navigation }) => ({
-          drawerIcon: ({ size }) => <Ionicons name="square" size={size} color={'white'} />,
-          headerTitle: () => (
-            <View style={styles.headerTitleContainer}>
-              <Text style={styles.headerTitle}>Inventario</Text>
-            </View>
-          ),
-          ...screenOptionsDrawer({ navigation }),
-        })}
-      />
-
-      <Drawer.Screen
-        name="Historial"
-        component={Historial}
-        options={{
-          headerShown: false,
-          drawerIcon: ({ size }) => <Ionicons name="search-circle" size={size} color={'white'} />,
-        }}
-      />
-      <Drawer.Screen
-        name="Generar Reporte"
-        component={GenerarReporte}
-        options={{
-          headerShown: false,
-          drawerIcon: ({ size }) => <Ionicons name="pencil" size={size} color={'white'} />
-        }}
-      />
-    </Drawer.Navigator>
-  );
-}
-
 export default function Navigation() {
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState<any>(null);
@@ -179,17 +75,14 @@ export default function Navigation() {
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           {user ? (
             <>
-              <Stack.Screen name="Main" component={DrawerNavigator} initialParams={{ name: user.displayName }} />
+              <Stack.Screen name="Main" component={MainMenu} initialParams={{ name: user.displayName }} />
               <Stack.Screen name="RegistroProducto" component={RegistroProducto} />
               <Stack.Screen name="Salida" component={Salida} />
-              <Stack.Screen
-                name="InventarioDetalles"
-                component={InventarioDetalles}
-                options={({ navigation }) => ({
-                  ...screenOptionsStack({ navigation }),
-                })}
-              />
+              <Stack.Screen name="InventarioDetalles" component={InventarioDetalles} options={({ navigation }) => ({ ...screenOptions({ navigation }) })} />
               <Stack.Screen name="Entrada" component={Entrada} />
+              <Stack.Screen name="Historial" component={Historial} />
+              <Stack.Screen name="Reporte" component={GenerarReporte} />
+              <Stack.Screen name="Inventario" component={Inventario} options={({ navigation }) => ({ ...screenOptions({ navigation }) })} />
             </>
           ) : (
             <>

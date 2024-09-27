@@ -1,8 +1,11 @@
 import { Text, View, StyleSheet, ImageBackground, Pressable } from 'react-native';
+import { signOut, getAuth } from 'firebase/auth';
+import { useFirebase } from '../db/FirebaseContext';
 
 const background = require('../assets/backgroundMain.png');
 
 export default function MainMenu({ navigation }: any) {
+    const { auth } = useFirebase();
     return (
         <View style={styles.container}>
             <ImageBackground source={background} resizeMode='cover' style={styles.back}>
@@ -13,6 +16,18 @@ export default function MainMenu({ navigation }: any) {
                 </Pressable>
                 <Pressable style={styles.button} onPress={() => { navigation.navigate('Salida') }}>
                     <Text>Salida de Producto</Text>
+                </Pressable>
+                <Pressable style={styles.button} onPress={() => { navigation.navigate('Inventario') }}>
+                    <Text>Inventario</Text>
+                </Pressable>
+                <Pressable style={styles.button} onPress={() => { navigation.navigate('Reporte') }}>
+                    <Text>Reporte</Text>
+                </Pressable>
+                <Pressable style={styles.button} onPress={() => { navigation.navigate('Historial') }}>
+                    <Text>Historial</Text>
+                </Pressable>
+                <Pressable style={styles.button} onPress={() => { if (auth) signOut(auth) }}>
+                    <Text>Logout</Text>
                 </Pressable>
                 {/* Botones temporales */}
             </ImageBackground>

@@ -17,7 +17,7 @@ export default function InventoryItem({ nombre, cantActual, unidad, cantMin }: a
     });
 
     return (
-        <View style={{ marginTop: 30 }}>
+        <View style={{ marginTop: 25 }}>
             <Text style={styles.title}>{nombre}</Text>
             <View style={[styles.itemContainer, isLowStock ? styles.lowStock : styles.inStock]}>
                 <View style={styles.contentContainer}>

@@ -16,7 +16,7 @@ export default function InventoryItem({ title, navigation }: any) {
     });
 
     return (
-        <View style={{ marginTop: 30 }}>
+        <View style={{ marginTop: 25 }}>
             <Pressable onPress={() => navigation.navigate('InventarioDetalles', { title })}>
                 <Text style={styles.title}>{title}</Text>
                 <View style={styles.itemContainer}>
