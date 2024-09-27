@@ -1,9 +1,78 @@
-import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Pressable } from 'react-native';
+import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Pressable, Alert, Keyboard, ActivityIndicator } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { doc, getDoc, collection, setDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
+import DropDownPicker from 'react-native-dropdown-picker';
+import { useState, useEffect } from 'react';
+import { useFirebase } from '../db/FirebaseContext';
+import { ref, getDownloadURL } from 'firebase/storage';
+import { fetchCategorias } from '../db/fetchCategorias';
+import { fetchProductos } from '../db/fetchProductos';
+import { fetchDonantes } from '../db/fetchDonantes';
 
 const background = require('../assets/backgroundMainSmall.png');
+const placeholder = require('../assets/inventarioPlaceholder.png');
 
 export default function Entrada({ navigation }: any) {
+    const { db, storage, auth } = useFirebase();
+    const currentUser = auth?.currentUser;
+
+    const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+    const [categorias, setCategorias] = useState<any[]>([]);  // First dropdown list
+    const [productos, setProductos] = useState<any[]>([]);    // Second dropdown list
+    const [selectedCategoria, setSelectedCategoria] = useState(null); // Selected category
+    const [selectedProducto, setSelectedProducto] = useState(null);   // Selected product
+    const [cantidad, setCantidad] = useState(0);
+    const [donante, setDonante] = useState<any[]>([]);
+    const [image, setImage] = useState(placeholder);
+    const [openCategorias, setOpenCategorias] = useState(false);
+    const [openProductos, setOpenProductos] = useState(false);
+    const [openDonante, setOpenDonante] = useState(false);
+    const [selectedDonante, setSelectedDonante] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+            setKeyboardVisible(true);
+        });
+        const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+            setKeyboardVisible(false);
+        });
+        return () => {
+            keyboardDidHideListener.remove();
+            keyboardDidShowListener.remove();
+        };
+    }, []);
+
+    useEffect(() => {
+        fetchDonantes(db).then(setDonante)
+        .then(() => {
+            setDonante(donantes => [{ label: 'Nuevo donante', value: 'RegistroDonante' }, ...donantes]);
+        });
+    }, [db]);
+
+    useEffect(() => {
+        fetchCategorias(db).then(setCategorias);
+    }, [db]);
+
+    useEffect(() => {
+        if (selectedCategoria) {
+            fetchProductos(db, selectedCategoria).then(setProductos);
+        }
+    }, [db, selectedCategoria]);
+
+    useEffect(() => {
+        if (selectedProducto && storage) {
+            const storageRef = ref(storage, 'Productos/' + selectedProducto + '.png');
+            getDownloadURL(storageRef).then((url) => {
+                setImage({ uri: url });
+            }).catch((error) => {
+                console.log(error);
+            });
+        } else {
+            setImage(placeholder);
+        }
+    }, [storage, selectedProducto]);
+
     return (
         <View style={styles.container}>
             <ImageBackground source={background} resizeMode='stretch' style={styles.back}>
@@ -13,55 +82,120 @@ export default function Entrada({ navigation }: any) {
                     </Pressable>
                     <Text style={styles.title}>Entrada de Productos</Text>
                 </View>
-                
+
                 <View style={styles.content}>
                     <Image
-                        source={require('../assets/inventarioPlaceholder.png')}
+                        source={image}
                         style={styles.productImage}
                     />
                     <View style={styles.inputContainer}>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Buscar Donante"
-                            placeholderTextColor="#888"
-                        />
-                        <View style={styles.searchInputContainer}>
-                            <TextInput
-                                style={styles.searchInput}
-                                placeholder="Buscar Producto"
-                                placeholderTextColor="#888"
+                        <View style={[styles.searchInputContainer, { zIndex: openDonante ? 3000 : 10 }]}>
+                            <DropDownPicker
+                                items={donante}
+                                open={openDonante}
+                                setOpen={setOpenDonante}
+                                value={selectedDonante}
+                                setValue={setSelectedDonante}
+                                placeholder="Donante"
+                                zIndex={2000}
+                                zIndexInverse={3000}
+                                searchable={true}
+                                listMode='MODAL'
+                                onChangeValue={(value) => {
+                                    if (value === 'RegistroDonante') {
+                                        navigation.navigate('RegistroDonante');
+                                    }
+                                }}
                             />
-                            <TouchableOpacity style={styles.searchButton}>
-                                <Ionicons name="search" size={24} color="#888" />
-                            </TouchableOpacity>
+                        </View>
+
+                        <View style={[styles.searchInputContainer, { zIndex: openCategorias ? 2000 : 0 }]}>
+                            <DropDownPicker
+                                items={categorias}
+                                open={openCategorias}
+                                setOpen={setOpenCategorias}
+                                value={selectedCategoria}
+                                setValue={setSelectedCategoria}
+                                placeholder="Categoría"
+                                zIndex={2000}
+                                zIndexInverse={3000}
+                            />
+                        </View>
+                        <View style={[styles.searchInputContainer, { zIndex: openProductos ? 1000 : 0 }]}>
+                            {selectedCategoria && (
+                                <DropDownPicker
+                                    items={productos}
+                                    open={openProductos}
+                                    setOpen={setOpenProductos}
+                                    value={selectedProducto}
+                                    setValue={setSelectedProducto}
+                                    placeholder="Producto"
+                                    searchable={true}
+                                    listMode='MODAL'
+                                    zIndex={1000}
+                                    zIndexInverse={2000}
+                                />
+                            )}
                         </View>
                         <View style={styles.quantityContainer}>
-                            <TextInput
-                                style={styles.quantityInput}
-                                placeholder="Cantidad de Unidades"
-                                placeholderTextColor="#888"
-                            />
-                            <View style={styles.unitContainer}>
-                                <Text style={styles.unitText}>Kg</Text>
-                            </View>
+                            {selectedProducto && (
+                                <TextInput
+                                    keyboardType='numeric'
+                                    style={styles.quantityInput}
+                                    placeholder="Cantidad de Unidades"
+                                    placeholderTextColor="#888"
+                                    onChangeText={(text) => setCantidad(Number(text))}
+                                />
+                            )}
                         </View>
-                        <TouchableOpacity style={styles.confirmButton} onPress={() => {
-                            alert('Entrada registrada con éxito')
-                            navigation.navigate('Home')
-                        }}>
-                            <Text style={{fontWeight: 'bold'}}>Confirmar</Text>
-                        </TouchableOpacity>
+                        {isLoading ? <ActivityIndicator size="small" color="#0000ff" /> :
+                            <TouchableOpacity style={styles.confirmButton} onPress={async () => {
+                                if (selectedDonante !== '' && selectedProducto !== '' && cantidad > 0 && db && currentUser) {
+                                    setIsLoading(true);
+                                    try {
+                                        const newEntryRef = doc(collection(db, 'Historial'));
+                                        await setDoc(newEntryRef, {
+                                            cantidad: cantidad,
+                                            donante: doc(db, `Donantes/${selectedDonante}`),
+                                            fecha: serverTimestamp(),
+                                            producto: doc(db, `Inventario/Categorias/${selectedCategoria}/${selectedProducto}`),
+                                            tipo: 'Ingreso',
+                                            usuario: doc(db, 'Usuarios', currentUser.uid)
+                                        });
+                                        const productoRef = doc(db, `Inventario/Categorias/${selectedCategoria}/${selectedProducto}`);
+                                        const productoDoc = await getDoc(productoRef);
+                                        if (productoDoc.exists()) {
+                                            await updateDoc(productoRef, {
+                                                cantActual: productoDoc.data().cantActual + cantidad
+                                            });
+                                        }
+                                        Alert.alert('Entrada', 'Entrada registrada con éxito');
+                                        navigation.navigate('MainMenu');
+                                        setIsLoading(false);
+                                    } catch (error) {
+                                        console.error('Error adding entry:', error);
+                                        Alert.alert('Error', 'Hubo un problema al registrar la entrada');
+                                        setIsLoading(false);
+                                    }
+                                } else {
+                                    Alert.alert('Entrada', 'Por favor, complete todos los campos')
+                                }
+                            }}>
+                                <Text style={{ fontWeight: 'bold' }}>Confirmar</Text>
+                            </TouchableOpacity>
+                        }
                     </View>
                 </View>
-
-                <View style={styles.footer}>
-                    <TouchableOpacity style={styles.registerButton} onPress={() => {
-                        navigation.navigate('RegistroProducto')
-                    }}>
-                        <Text style={styles.registerButtonText}>+</Text>
-                    </TouchableOpacity>
-                    <Text style={styles.registerText}>Registrar</Text>
-                </View>
+                {!isKeyboardVisible ? (
+                    <View style={styles.footer}>
+                        <TouchableOpacity style={styles.registerButton} onPress={() => {
+                            navigation.navigate('RegistroProducto')
+                        }}>
+                            <Text style={styles.registerButtonText}>+</Text>
+                        </TouchableOpacity>
+                        <Text style={styles.registerText}>Registrar</Text>
+                    </View>
+                ) : null}
             </ImageBackground>
         </View>
     );
@@ -128,13 +262,6 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginBottom: 10,
     },
-    searchInput: {
-        flex: 1,
-        padding: 10,
-    },
-    searchButton: {
-        padding: 10,
-    },
     quantityContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -145,12 +272,6 @@ const styles = StyleSheet.create({
     quantityInput: {
         flex: 1,
         padding: 10,
-    },
-    unitText: {
-        padding: 10,
-        backgroundColor: '#e0e0e0',
-        borderTopRightRadius: 5,
-        borderBottomRightRadius: 5,
     },
     confirmButton: {
         backgroundColor: '#ffd700',
@@ -178,11 +299,5 @@ const styles = StyleSheet.create({
     },
     registerText: {
         color: '#fff',
-    },
-    unitContainer: {
-        padding: 10,
-        backgroundColor: '#e0e0e0',
-        borderTopRightRadius: 5,
-        borderBottomRightRadius: 5,
     },
 });

@@ -1,10 +1,35 @@
-import { ScrollView, View, StyleSheet, Text, ImageBackground, Pressable } from 'react-native';
+import { View, StyleSheet, Text, ImageBackground, Pressable, FlatList, RefreshControl } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { collection, query, getDocs, orderBy } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
+import { useFirebase } from '../db/FirebaseContext';
 import HistorialItem from '../components/HistorialItem';
 
 const background = require('../assets/backgroundMainSmall.png');
 
 export default function Historial({ navigation }: any) {
+    const { db } = useFirebase();
+    const [data, setData] = useState<any[]>([]);
+    const [refreshing, setRefreshing] = useState(false);
+
+    const fetchData = async () => {
+        if (db) {
+            const snapshot = query(collection(db, 'Historial'), orderBy('fecha', 'desc'));
+            const data = await getDocs(snapshot);
+            setData(data.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, [db]);
+
+    const onRefresh = async () => {
+        setRefreshing(true);
+        await fetchData();
+        setRefreshing(false);
+    };
+
     return (
         <View style={styles.container}>
             <ImageBackground source={background} resizeMode='stretch' style={styles.back}>
@@ -14,17 +39,24 @@ export default function Historial({ navigation }: any) {
                     </Pressable>
                     <Text style={styles.title}>Historial</Text>
                 </View>
-                <ScrollView style={{ marginTop: '20%', marginBottom: '30%', width: '100%' }}>
-                    <HistorialItem message='Notificacion placeholder' timestamp="Hace 4h" />
-                    <HistorialItem message='Notificacion placeholder' timestamp="Hace 4h" />
-                    <HistorialItem message='Notificacion placeholder' timestamp="Hace 4h" />
-                    <HistorialItem message='Notificacion placeholder' timestamp="Hace 4h" />
-                    <HistorialItem message='Notificacion placeholder' timestamp="Hace 4h" />
-                    <HistorialItem message='Notificacion placeholder' timestamp="Hace 4h" />
-                    <HistorialItem message='Notificacion placeholder' timestamp="Hace 4h" />
-                    <HistorialItem message='Notificacion placeholder' timestamp="Hace 4h" />
-                    <HistorialItem message='Notificacion placeholder' timestamp="Hace 4h" />
-                </ScrollView>
+                <View style={{ marginTop: '20%', marginBottom: '50%', width: '100%' }}>
+                    {
+                        data.length > 0 ? (
+                            <FlatList 
+                                data={data}
+                                renderItem={({ item }) => <HistorialItem item={item} />}
+                                refreshControl={
+                                    <RefreshControl
+                                        refreshing={refreshing}
+                                        onRefresh={onRefresh}
+                                    />
+                                }
+                            />
+                        ) : (
+                            <Text style={{justifyContent: 'center', alignSelf: 'center', fontSize: 20, color: 'black'}}>No hay historial</Text>
+                        )
+                    }
+                </View>
             </ImageBackground>
         </View>
     );

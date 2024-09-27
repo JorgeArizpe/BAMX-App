@@ -1,10 +1,24 @@
 import { View, Text, Image, StyleSheet } from 'react-native';
+import { useState } from 'react';
+import { ref, getDownloadURL } from 'firebase/storage';
+import { useFirebase } from '../db/FirebaseContext';
 
-export default function InventoryItem({ title, imageSource, quantity, unit, minQuantity }: any) {
-    const isLowStock = quantity < minQuantity;
+export default function InventoryItem({ nombre, cantActual, unidad, cantMin }: any) {
+    const { storage } = useFirebase();
+    const [imageSource, setImageSource] = useState(require('../assets/inventarioPlaceholder.png'));
+    const isLowStock = cantActual < cantMin;
+
+    var storageRef = storage ? ref(storage, `Productos/${nombre}.png`) : require('../assets/inventarioPlaceholder.png');
+
+    getDownloadURL(storageRef).then((url) => {
+        setImageSource({ uri: url });
+    }).catch((error) => {
+        console.log(error);
+    });
+
     return (
-        <View style={{marginTop:30}}>
-            <Text style={styles.title}>{title}</Text>
+        <View style={{ marginTop: 25 }}>
+            <Text style={styles.title}>{nombre}</Text>
             <View style={[styles.itemContainer, isLowStock ? styles.lowStock : styles.inStock]}>
                 <View style={styles.contentContainer}>
                     <View style={styles.imageContainer}>
@@ -12,9 +26,9 @@ export default function InventoryItem({ title, imageSource, quantity, unit, minQ
                     </View>
                     <View style={styles.detailsContainer}>
                         <Text style={styles.text}>
-                            Cantidad: {quantity} {unit}
+                            Cantidad: {cantActual} {unidad}
                         </Text>
-                        {isLowStock && <Text style={[styles.text, { color: 'red' }]}>Mínimo: {minQuantity} {unit}</Text>}
+                        {isLowStock && <Text style={[styles.text, { color: 'red' }]}>Mínimo: {cantMin} {unidad}</Text>}
                     </View>
                 </View>
             </View>
@@ -37,7 +51,7 @@ const styles = StyleSheet.create({
     image: {
         width: 150,
         height: 100,
-        resizeMode: 'center',
+        resizeMode: 'contain',
     },
     detailsContainer: {
         flex: 1,

@@ -1,144 +1,99 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
-import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import { View, Text, StyleSheet, Pressable, Image } from 'react-native';
+import { initializeApp } from 'firebase/app';
+import { initializeAuth, getReactNativePersistence, onAuthStateChanged } from 'firebase/auth';
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
+import { getFirestore } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
+import { Login, CreateAccount, MainMenu, Inventario, Historial, GenerarReporte, Entrada, RegistroProducto, Salida, Loading, RegistroDonante } from './screens';
+import { FirebaseContext } from './db/FirebaseContext';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import Login from './screens/Login';
-import CreateAccount from './screens/SignUp';
-import MainMenu from './screens/MainMenu';
-import Inventario from './screens/Inventario';
-import Historial from './screens/Historial';
-import GenerarReporte from './screens/GenerarReporte';
-import Entrada from './screens/Entrada';
-import RegistroProducto from './screens/RegistroProducto';
-import Salida from './screens/Salida';
+import { useState, useEffect } from 'react';
+import InventarioDetalles from './screens/InventarioDetalles';
 
+const firebaseConfig = {
+  apiKey: process.env.EXPO_PUBLIC_API_KEY,
+  authDomain: process.env.EXPO_PUBLIC_AUTH_DOMAIN,
+  databaseURL: process.env.EXPO_PUBLIC_DATABASE_URL,
+  projectId: process.env.EXPO_PUBLIC_PROJECT_ID,
+  storageBucket: process.env.EXPO_PUBLIC_STORAGE_BUCKET,
+  messagingSenderId: process.env.EXPO_PUBLIC_MESSAGING_SENDER_ID,
+  appId: process.env.EXPO_PUBLIC_APP_ID,
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+});
+const db = getFirestore(app);
+const storage = getStorage(app);
 const Stack = createNativeStackNavigator();
-const Drawer = createDrawerNavigator();
 
-const screenOptions = ({ navigation }:any) => ({
-  headerStyle: { height: 100 },
-  headerLeft: () => (
-    <Pressable onPress={() => navigation.goBack()}>
-      <Ionicons name="arrow-back" style={styles.backArrow} />
-    </Pressable>
+
+const screenOptions = ({ navigation }: any) => ({
+  headerBackVisible: false,
+  headerShown: true,
+  headerTitle: () => (
+    <View style={styles.headerTitleContainer}>
+      <Text style={styles.headerTitle}>Inventario</Text>
+    </View>
   ),
   headerRight: () => (
-    <Pressable onPress={() => navigation.navigate('Home')}>
+    <Pressable onPress={() => navigation.navigate('MainMenu')}>
       <Image
         source={require('./assets/manzana_logo.png')}
-        style={[styles.headerRightImage, { resizeMode: 'contain' }]}
+        style={styles.headerRightImage}
       />
+    </Pressable>
+  ),
+  headerLeft: () => (
+    <Pressable onPress={() => navigation.goBack()}>
+      <Ionicons name="arrow-back" style={[styles.backArrow, { marginLeft: -20, marginRight: 20 }]} />
     </Pressable>
   ),
 });
 
-function CustomDrawerContent(props: any) {
+export default function Navigation() {
+  const [initializing, setInitializing] = useState(true);
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+      if (initializing) setInitializing(false);
+    });
+
+    return unsubscribe;
+  }, []);
+
+  if (initializing) return <Loading />;
+
   return (
-    <DrawerContentScrollView {...props}>
-      <View style={styles.customContent}>
-        <Text style={styles.customText}>Menu Epico Placeholder</Text>
-      </View>
-
-      <DrawerItemList {...props} />
-
-      <View style={styles.bottomDrawerSection}>
-        <Pressable style={styles.drawerItem} onPress={() => props.navigation.navigate('Login')}>
-          <Ionicons name="log-out" size={24} color={'white'} style={styles.drawerItemIcon} />
-          <Text style={styles.drawerItemText}>Cerrar Sesión</Text>
-        </Pressable>
-      </View>
-    </DrawerContentScrollView>
-  );
-}
-
-function DrawerNavigator() {
-  return (
-    <Drawer.Navigator
-      initialRouteName="Home"
-      drawerContent={(props) => <CustomDrawerContent {...props} />}
-      screenOptions={{
-        drawerStyle: { backgroundColor: '#CE0F2C', width: 240, borderTopRightRadius: 30, borderBottomRightRadius: 30 },
-        drawerLabelStyle: { color: 'white', fontSize: 13, flexWrap: 'wrap' },
-        headerTintColor: '#fff',
-      }}
-    >
-      <Drawer.Screen
-        name="Home"
-        component={MainMenu}
-        options={{
-          headerTitle: ' ',
-          headerStyle: { backgroundColor: '#CE0F2C', height: 100 },
-          drawerIcon: ({ focused, size }) => <Ionicons name="home" size={size} color={'white'} />
-        }}
-      />
-      <Drawer.Screen
-        name="Configuracion"
-        component={MainMenu}
-        options={{
-          headerShown: false,
-          drawerIcon: ({ focused, size }) => <Ionicons name="settings" size={size} color={'white'} />
-        }}
-      />
-      <Drawer.Screen
-        name="Inventario"
-        component={Inventario}
-        options={({ navigation }) => ({
-          drawerIcon: ({ focused, size }) => <Ionicons name="square" size={size} color={'white'} />,
-          headerTitle: () => (
-            <View style={styles.headerTitleContainer}>
-              <Text style={styles.headerTitle}>Inventario</Text>
-            </View>
-          ),
-          ...screenOptions({ navigation }),
-        })}
-      />
-
-      <Drawer.Screen
-        name="Historial"
-        component={Historial}
-        options={{
-          headerShown: false,
-          drawerIcon: ({ focused, size }) => <Ionicons name="search-circle" size={size} color={'white'} />,
-        }}
-      />
-      <Drawer.Screen
-        name="Generar Reporte"
-        component={GenerarReporte}
-        options={{
-          headerShown: false,
-          drawerIcon: ({ focused, size }) => <Ionicons name="pencil" size={size} color={'white'} />
-        }}
-      />
-      <Drawer.Screen
-        name="Entrada"
-        component={Entrada}
-        options={{
-          headerShown: false,
-          drawerIcon: ({ focused, size }) => <Ionicons name="add-circle-outline" size={size} color={'white'} />
-        }}
-      />
-    </Drawer.Navigator>
-  );
-}
-
-export default function navigation() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {/* Stack para las pantallas de login y registro  */}
-        <Stack.Group>
-          <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="CreateAccount" component={CreateAccount} />
-          <Stack.Screen name="Main" component={DrawerNavigator} />
-        </Stack.Group>
-        {/* Stack para las pantallas de inventario y otros usos*/}
-        <Stack.Group>
-          <Stack.Screen name="RegistroProducto" component={RegistroProducto} />
-          <Stack.Screen name="Salida" component={Salida} />
-        </Stack.Group>
-      </Stack.Navigator>
-    </NavigationContainer>
+    <FirebaseContext.Provider value={{ app, auth, db, storage }}>
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          {user ? (
+            <>
+              <Stack.Screen name="MainMenu" component={MainMenu} initialParams={{ name: user.displayName }} />
+              <Stack.Screen name="RegistroProducto" component={RegistroProducto} />
+              <Stack.Screen name="Salida" component={Salida} />
+              <Stack.Screen name="InventarioDetalles" component={InventarioDetalles} options={({ navigation }) => ({ ...screenOptions({ navigation }) })} />
+              <Stack.Screen name="Entrada" component={Entrada} />
+              <Stack.Screen name="Historial" component={Historial} />
+              <Stack.Screen name="Reporte" component={GenerarReporte} />
+              <Stack.Screen name="Inventario" component={Inventario} options={({ navigation }) => ({ ...screenOptions({ navigation }) })} />
+              <Stack.Screen name="RegistroDonante" component={RegistroDonante} />
+            </>
+          ) : (
+            <>
+              <Stack.Screen name="Login" component={Login} />
+              <Stack.Screen name="CreateAccount" component={CreateAccount} />
+            </>
+          )}
+        </Stack.Navigator>
+      </NavigationContainer>
+    </FirebaseContext.Provider>
   );
 }
 
@@ -197,5 +152,6 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     marginRight: 15,
+    resizeMode: 'contain',
   },
 });
