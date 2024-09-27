@@ -13,8 +13,8 @@ export default function MainMenu({ navigation }: any) {
             <ImageBackground source={background} resizeMode='cover' style={styles.back}>
                 <Image source={logo} style={styles.logo} />
                 <Text style={styles.welcome}>Bienvenido, {currentUser?.displayName}</Text>
+                <Text style={styles.welcome}>Menu Principal</Text>
                 <View style={styles.menu}>
-                    <Text style={{ fontSize: 20 }}>Main Menu</Text>
                     {/* Botones temporales */}
                     <Pressable style={styles.button} onPress={() => { navigation.navigate('Entrada') }}>
                         <Text>Entrada de Producto</Text>
@@ -60,8 +60,10 @@ const styles = StyleSheet.create({
         margin: 10,
         borderRadius: 5,
         alignItems: 'center',
-        width: 200,
+        width: 150,
+        height: 75,
         backgroundColor: 'lightblue',
+        justifyContent: 'center',
     },
     logo: {
         marginTop: '20%',
@@ -76,7 +78,10 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     menu: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
         marginTop: '10%',
+        width: '80%',
         alignItems: 'center',
     },
 });

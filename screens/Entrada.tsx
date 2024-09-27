@@ -46,7 +46,7 @@ export default function Entrada({ navigation }: any) {
     useEffect(() => {
         fetchDonantes(db).then(setDonante)
         .then(() => {
-            setDonante(donantes => [{ label: 'Selecciona un Donante', value: 'RegistroDonante' }, ...donantes]);
+            setDonante(donantes => [{ label: 'Nuevo donante', value: 'RegistroDonante' }, ...donantes]);
         });
     }, [db]);
 
