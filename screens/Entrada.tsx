@@ -44,7 +44,10 @@ export default function Entrada({ navigation }: any) {
     }, []);
 
     useEffect(() => {
-        fetchDonantes(db).then(setDonante);
+        fetchDonantes(db).then(setDonante)
+        .then(() => {
+            setDonante(donantes => [{ label: 'Selecciona un Donante', value: 'RegistroDonante' }, ...donantes]);
+        });
     }, [db]);
 
     useEffect(() => {
@@ -96,6 +99,13 @@ export default function Entrada({ navigation }: any) {
                                 placeholder="Donante"
                                 zIndex={2000}
                                 zIndexInverse={3000}
+                                searchable={true}
+                                listMode='MODAL'
+                                onChangeValue={(value) => {
+                                    if (value === 'RegistroDonante') {
+                                        navigation.navigate('RegistroDonante');
+                                    }
+                                }}
                             />
                         </View>
 
