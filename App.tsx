@@ -6,11 +6,10 @@ import { initializeAuth, getReactNativePersistence, onAuthStateChanged } from 'f
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
-import { Login, CreateAccount, MainMenu, Inventario, Historial, GenerarReporte, Entrada, RegistroProducto, Salida, Loading, RegistroDonante } from './screens';
+import { Login, CreateAccount, MainMenu, Inventario, Historial, GenerarReporte, Entrada, RegistroProducto, Salida, Loading, RegistroDonante, InventarioDetalles } from './screens';
 import { FirebaseContext } from './db/FirebaseContext';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useState, useEffect } from 'react';
-import InventarioDetalles from './screens/InventarioDetalles';
 
 const firebaseConfig = {
   apiKey: process.env.EXPO_PUBLIC_API_KEY,

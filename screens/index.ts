@@ -9,3 +9,4 @@ export { default as RegistroProducto } from './RegistroProducto';
 export { default as Salida } from './Salida';
 export { default as Loading } from './Loading';
 export { default as RegistroDonante } from './RegistroDonante';
+export { default as InventarioDetalles } from './InventarioDetalles';

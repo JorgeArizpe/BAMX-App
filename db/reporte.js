@@ -38,15 +38,18 @@ export const reporte = async (db, dateInicio, dateFin, navigation, titulo, descr
             fileContent += `producto: ${productoNombre}\n`;
             fileContent += `cantidad: ${docu.cantidad} ${docSnap.data()?.unidad}\n`;
 
+
             docRef = doc(db, docu.usuario.path);
             docSnap = await getDoc(docRef);
             const usuarioNombre = docSnap.data()?.name || 'N/A';
             fileContent += `usuario: ${usuarioNombre}\n`;
 
-            docRef = doc(db, docu.donante.path);
-            docSnap = await getDoc(docRef);
-            const donanteNombre = docSnap.data()?.nombre || 'N/A';
-            fileContent += `donante: ${donanteNombre}\n`;
+            if (docu.donante.path) {
+                docRef = doc(db, docu.donante.path);
+                docSnap = await getDoc(docRef);
+                const donanteNombre = docSnap.data()?.nombre || 'N/A';
+                fileContent += `donante: ${donanteNombre}\n`;
+            }
 
             fileContent += '\n';
         }
