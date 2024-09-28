@@ -1,7 +1,7 @@
 import { Text, View, StyleSheet, ImageBackground, Pressable, Image } from 'react-native';
 import { signOut } from 'firebase/auth';
 import { useFirebase } from '../db/FirebaseContext';
-
+import Ionicons from '@expo/vector-icons/Ionicons';
 const background = require('../assets/backgroundMain.png');
 const logo = require('../assets/manzana_logo.png');
 
@@ -11,6 +11,14 @@ export default function MainMenu({ navigation }: any) {
     return (
         <View style={{ flex: 1 }}>
             <ImageBackground source={background} resizeMode='cover' style={styles.back}>
+                <View style={styles.headerContainer}>
+                    <Pressable onPress={() => { if (auth) signOut(auth) }}>
+                        <Ionicons name="log-out" style={styles.leftHeaderItem} />
+                    </Pressable>
+                    <Pressable onPress={() => { if (auth) signOut(auth) }}>
+                        <Ionicons name="notifications" style={styles.rightHeaderItem} />
+                    </Pressable>
+                </View>
                 <Image source={logo} style={styles.logo} />
                 <Text style={styles.welcome}>Bienvenido, {currentUser?.displayName}</Text>
                 <Text style={styles.welcome}>Menu Principal</Text>
@@ -30,9 +38,6 @@ export default function MainMenu({ navigation }: any) {
                     </Pressable>
                     <Pressable style={styles.button} onPress={() => { navigation.navigate('Historial') }}>
                         <Text>Historial</Text>
-                    </Pressable>
-                    <Pressable style={styles.button} onPress={() => { if (auth) signOut(auth) }}>
-                        <Text>Logout</Text>
                     </Pressable>
                     {/* Botones temporales */}
                 </View>
@@ -60,13 +65,12 @@ const styles = StyleSheet.create({
         margin: 10,
         borderRadius: 5,
         alignItems: 'center',
-        width: 150,
+        width: 250,
         height: 75,
         backgroundColor: 'lightblue',
         justifyContent: 'center',
     },
     logo: {
-        marginTop: '20%',
         width: 150,
         height: 150,
         resizeMode: 'contain',
@@ -78,10 +82,25 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     menu: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        marginTop: '10%',
+        marginTop: '5%',
         width: '80%',
         alignItems: 'center',
+    },
+    headerContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        width: '100%',
+        justifyContent: 'space-between',
+        paddingTop: 20,
+    },
+    leftHeaderItem: {
+        paddingLeft: 20,
+        fontSize: 35,
+        color: 'white',
+    },
+    rightHeaderItem: {
+        paddingRight: 20,
+        fontSize: 35,
+        color: 'white',
     },
 });

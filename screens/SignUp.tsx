@@ -73,6 +73,11 @@ export default function SignUp({ navigation }: any) {
                                                 name: name,
                                                 username: username,
                                                 email: email,
+                                                //editing permits
+                                                inventario: true,
+                                                historial: true,
+                                                reporte: true,
+                                                entradaSalida: true,
                                             });
                                             console.log('Usuario creado con éxito');
                                             navigation.navigate('MainMenu');
