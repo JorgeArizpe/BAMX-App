@@ -1,19 +1,32 @@
 import { View, Text, Image, StyleSheet, Pressable } from 'react-native';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ref, getDownloadURL } from 'firebase/storage';
 import { useFirebase } from '../db/FirebaseContext';
 
-export default function InventoryItem({ title, navigation }: any) {
+export default function CategoryItem({ title, navigation }: any) {
     const [imageSource, setImageSource] = useState(require('../assets/inventarioPlaceholder.png'));
     const { storage } = useFirebase();
 
-    var storageRef = storage ? ref(storage, `Categorias/${title}.png`) : require('../assets/inventarioPlaceholder.png');
+    useEffect(() => {
+        const extensions = ['png', 'jpg', 'jpeg'];
+        const fetchImage = async () => {
+            if (!storage) return;
 
-    getDownloadURL(storageRef).then((url) => {
-        setImageSource({ uri: url });
-    }).catch((error) => {
-        console.log(error);
-    });
+            for (const ext of extensions) {
+                const storageRef = ref(storage, `Categorias/${title}.${ext}`);
+                try {
+                    const url = await getDownloadURL(storageRef);
+                    setImageSource({ uri: url });
+                    return;
+                } catch (error) {
+                    console.log(`No ${ext} image found for ${title}`);
+                }
+            }
+            console.log(`No image found for ${title}`);
+        };
+
+        fetchImage();
+    }, [title, storage]);
 
     return (
         <View style={{ marginTop: 25 }}>

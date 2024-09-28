@@ -78,6 +78,7 @@ export default function SignUp({ navigation }: any) {
                                                 historial: true,
                                                 reporte: true,
                                                 entradaSalida: true,
+                                                admin: false,
                                             });
                                             console.log('Usuario creado con éxito');
                                             navigation.navigate('MainMenu');

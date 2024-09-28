@@ -1,13 +1,28 @@
-import { Text, View, StyleSheet, ImageBackground, Pressable, Image } from 'react-native';
+import { Text, View, StyleSheet, ImageBackground, Pressable, Image, ActivityIndicator } from 'react-native';
 import { signOut } from 'firebase/auth';
+import { useState, useEffect } from 'react';
 import { useFirebase } from '../db/FirebaseContext';
+import { doc, getDoc } from 'firebase/firestore';
 import Ionicons from '@expo/vector-icons/Ionicons';
 const background = require('../assets/backgroundMain.png');
 const logo = require('../assets/manzana_logo.png');
 
 export default function MainMenu({ navigation }: any) {
-    const { auth } = useFirebase();
+    const { auth, db } = useFirebase();
     const currentUser = auth?.currentUser;
+    const [usuario, setUsuario] = useState<any>(null);
+
+    useEffect(() => {
+        if (db && currentUser) {
+            const usuarioRef = doc(db, 'Usuarios', currentUser.uid);
+            getDoc(usuarioRef).then((doc) => {
+                if (doc.exists()) {
+                    setUsuario(doc.data());
+                }
+            });
+        }
+    }, [db]);
+
     return (
         <View style={{ flex: 1 }}>
             <ImageBackground source={background} resizeMode='cover' style={styles.back}>
@@ -20,26 +35,67 @@ export default function MainMenu({ navigation }: any) {
                     </Pressable>
                 </View>
                 <Image source={logo} style={styles.logo} />
-                <Text style={styles.welcome}>Bienvenido, {currentUser?.displayName}</Text>
-                <Text style={styles.welcome}>Menu Principal</Text>
+                <Text style={styles.welcome}>{usuario ? `Bienvenido, ${usuario.username}` : 'Cargando...'}</Text>
+                {usuario ? <Text style={styles.welcome}>Menu Principal</Text> : <ActivityIndicator size="large" color="#0000ff" />}
+
                 <View style={styles.menu}>
-                    {/* Botones temporales */}
-                    <Pressable style={styles.button} onPress={() => { navigation.navigate('Entrada') }}>
-                        <Text>Entrada de Producto</Text>
-                    </Pressable>
-                    <Pressable style={styles.button} onPress={() => { navigation.navigate('Salida') }}>
-                        <Text>Salida de Producto</Text>
-                    </Pressable>
-                    <Pressable style={styles.button} onPress={() => { navigation.navigate('Inventario') }}>
-                        <Text>Inventario</Text>
-                    </Pressable>
-                    <Pressable style={styles.button} onPress={() => { navigation.navigate('Reporte') }}>
-                        <Text>Reporte</Text>
-                    </Pressable>
-                    <Pressable style={styles.button} onPress={() => { navigation.navigate('Historial') }}>
-                        <Text>Historial</Text>
-                    </Pressable>
-                    {/* Botones temporales */}
+                    {usuario?.entradaSalida ?
+                        <>
+                            <Pressable style={styles.button} onPress={() => { navigation.navigate('Entrada') }}>
+                                <Text>Entrada de Producto</Text>
+                            </Pressable>
+                            <Pressable style={styles.button} onPress={() => { navigation.navigate('Salida') }}>
+                                <Text>Salida de Producto</Text>
+                            </Pressable>
+                        </>
+                        :
+                        <></>
+                    }
+                    {usuario?.inventario ?
+                        <>
+                            <Pressable style={styles.button} onPress={() => { navigation.navigate('Inventario') }}>
+                                <Text>Inventario</Text>
+                            </Pressable>
+                        </>
+                        :
+                        <></>
+                    }
+                    {usuario?.reporte ?
+                        <>
+                            <Pressable style={styles.button} onPress={() => { navigation.navigate('Reporte') }}>
+                                <Text>Reporte</Text>
+                            </Pressable>
+                        </>
+                        :
+                        <></>
+                    }
+                    {usuario?.historial ?
+                        <>
+                            <Pressable style={styles.button} onPress={() => { navigation.navigate('Historial') }}>
+                                <Text>Historial</Text>
+                            </Pressable>
+                        </>
+                        :
+                        <></>
+                    }
+                    {usuario?.admin ?
+                        <>
+                            <Text>Administrador</Text>
+                            <View style={styles.adminButtons}>
+                                <Pressable style={styles.adminButton} onPress={() => { navigation.navigate('Donantes') }}>
+                                    <Text>Donantes</Text>
+                                </Pressable>
+                                <Pressable style={styles.adminButton} onPress={() => { navigation.navigate('Usuarios') }}>
+                                    <Text>Usuarios</Text>
+                                </Pressable>
+                                <Pressable style={styles.adminButton} onPress={() => { navigation.navigate('Productos') }}>
+                                    <Text>Producto</Text>
+                                </Pressable>
+                            </View>
+                        </>
+                        :
+                        <></>
+                    }
                 </View>
             </ImageBackground>
         </View>
@@ -65,8 +121,8 @@ const styles = StyleSheet.create({
         margin: 10,
         borderRadius: 5,
         alignItems: 'center',
-        width: 250,
-        height: 75,
+        width: 310,
+        height: 60,
         backgroundColor: 'lightblue',
         justifyContent: 'center',
     },
@@ -103,4 +159,19 @@ const styles = StyleSheet.create({
         fontSize: 35,
         color: 'white',
     },
+    adminButtons: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+    },
+    adminButton: {
+        padding: 10,
+        margin: 10,
+        borderRadius: 5,
+        alignItems: 'center',
+        width: 90,
+        height: 60,
+        backgroundColor: 'lightblue',
+        justifyContent: 'center',
+    }
 });

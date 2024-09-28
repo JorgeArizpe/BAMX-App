@@ -1,5 +1,5 @@
 import { View, Text, Image, StyleSheet } from 'react-native';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ref, getDownloadURL } from 'firebase/storage';
 import { useFirebase } from '../db/FirebaseContext';
 
@@ -8,13 +8,26 @@ export default function InventoryItem({ nombre, cantActual, unidad, cantMin }: a
     const [imageSource, setImageSource] = useState(require('../assets/inventarioPlaceholder.png'));
     const isLowStock = cantActual < cantMin;
 
-    var storageRef = storage ? ref(storage, `Productos/${nombre}.png`) : require('../assets/inventarioPlaceholder.png');
+    useEffect(() => {
+        const extensions = ['png', 'jpg', 'jpeg'];
+        const fetchImage = async () => {
+            if (!storage) return;
 
-    getDownloadURL(storageRef).then((url) => {
-        setImageSource({ uri: url });
-    }).catch((error) => {
-        console.log(error);
-    });
+            for (const ext of extensions) {
+                const storageRef = ref(storage, `Productos/${nombre}.${ext}`);
+                try {
+                    const url = await getDownloadURL(storageRef);
+                    setImageSource({ uri: url });
+                    return;
+                } catch (error) {
+                    console.log(`No ${ext} image found for ${nombre}`);
+                }
+            }
+            console.log(`No image found for ${nombre}`);
+        };
+
+        fetchImage();
+    }, [nombre, storage]);
 
     return (
         <View style={{ marginTop: 25 }}>

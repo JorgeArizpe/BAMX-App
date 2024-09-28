@@ -63,7 +63,6 @@ export default function RegistroProducto({ navigation }: any) {
                 const newEntryRef = doc(collection(db, 'Historial'));
                 await setDoc(newEntryRef, {
                     cantidad: cantidad,
-                    donante: 'n/a',
                     fecha: serverTimestamp(),
                     producto: doc(db, `Inventario/Categorias/${selectedCategoria}/${nombre}`),
                     tipo: 'Ingreso',
@@ -96,7 +95,7 @@ export default function RegistroProducto({ navigation }: any) {
                             <Image source={{ uri: image }} style={styles.uploadedImage} />
                         ) : (
                             <>
-                                <Text style={styles.placeholderText}>Selecciona una imagen .PNG</Text>
+                                <Text style={styles.placeholderText}>Selecciona una imagen</Text>
                             </>
                         )}
 
