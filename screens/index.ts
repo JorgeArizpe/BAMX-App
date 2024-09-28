@@ -10,3 +10,4 @@ export { default as Salida } from './Salida';
 export { default as Loading } from './Loading';
 export { default as RegistroDonante } from './RegistroDonante';
 export { default as InventarioDetalles } from './InventarioDetalles';
+export { default as Notificaciones } from './Notificaciones';

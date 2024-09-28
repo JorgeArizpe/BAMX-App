@@ -6,7 +6,7 @@ import { initializeAuth, getReactNativePersistence, onAuthStateChanged } from 'f
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
-import { Login, CreateAccount, MainMenu, Inventario, Historial, GenerarReporte, Entrada, RegistroProducto, Salida, Loading, RegistroDonante, InventarioDetalles } from './screens';
+import { Login, CreateAccount, MainMenu, Inventario, Historial, GenerarReporte, Entrada, RegistroProducto, Salida, Loading, RegistroDonante, InventarioDetalles, Notificaciones } from './screens';
 import { FirebaseContext } from './db/FirebaseContext';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useState, useEffect } from 'react';
@@ -83,6 +83,7 @@ export default function Navigation() {
               <Stack.Screen name="Reporte" component={GenerarReporte} />
               <Stack.Screen name="Inventario" component={Inventario} options={({ navigation }) => ({ ...screenOptions({ navigation }) })} />
               <Stack.Screen name="RegistroDonante" component={RegistroDonante} />
+              <Stack.Screen name="Notificaciones" component={Notificaciones} />
             </>
           ) : (
             <>

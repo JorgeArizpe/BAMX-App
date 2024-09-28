@@ -2,20 +2,30 @@ import { View, StyleSheet, Text, Pressable, ActivityIndicator, Alert } from 'rea
 import { useEffect, useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { useFirebase } from '../db/FirebaseContext';
-import { getProductoUsuarioDonante } from '../db/getProductoUsuarioDonante';
-
-export default function HistorialItem({ item }: any) {
+import { doc, getDoc } from 'firebase/firestore';
+export default function NotificacionesItem({ item }: any) {
     const { db } = useFirebase();
     const [producto, setProducto] = useState<any>(null);
-    const [usuario, setUsuario] = useState<any>(null);
     const [loading, setLoading] = useState(true);
-    const [donante, setDonante] = useState<any>(null);
 
     useEffect(() => {
-
-        getProductoUsuarioDonante(db, item, setProducto, setUsuario, setDonante)
-            .then(() => setLoading(false));
-    }, [db, item.producto, item.usuario, item.donante]);
+        const fetchData = async () => {
+            if (db) {
+                try {
+                    const docRef = doc(db, item.producto.path);
+                    const docSnap = await getDoc(docRef);
+                    if (docSnap.exists()) {
+                        setProducto(docSnap.data());
+                    } else {
+                        console.error('No such product document!');
+                    }
+                } catch (error) {
+                    console.error('Error fetching product:', error);
+                }
+            }
+        };
+        fetchData().then(() => setLoading(false));
+    }, [db, item]);
 
     if (loading) {
         return (
@@ -25,29 +35,22 @@ export default function HistorialItem({ item }: any) {
         );
     }
 
-    if (!producto || !usuario) {
+    if (!producto) {
         return (
             <View style={styles.errorContainer}>
-                <Text style={styles.errorText}>Error cargando datos del producto o usuario</Text>
+                <Text style={styles.errorText}>Error cargando datos del producto</Text>
             </View>
         );
     }
 
     const timestamp = formatDistanceToNow(new Date(item.fecha.seconds * 1000), { addSuffix: true });
-    let alerta = `${item.tipo }: ${item.cantidad} ${producto.unidad} de ${producto.nombre} \npor ${usuario.name}\n${timestamp}`;
-
-    if (donante) {
-        alerta += `\nDonante: ${donante.nombre}`;
-    }
 
     return (
         <View style={styles.notificationContainer}>
-            <Pressable onPress={() => Alert.alert("Historial", alerta)}>
-                <Text style={styles.timestamp}>{timestamp}</Text>
-                <Text style={{ paddingBottom: 10 }}>
-                    {item.tipo }: {item.cantidad} {producto.unidad} de {producto.nombre}
-                </Text>
-            </Pressable>
+            <Text style={styles.timestamp}>{timestamp}</Text>
+            <Text style={{ paddingBottom: 10 }}>
+                {item.inStock ? 'Se ha restockado' : 'Ha llegado al minimo'} {producto.nombre}
+            </Text>
         </View>
     );
 }

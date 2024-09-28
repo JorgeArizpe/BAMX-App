@@ -1,6 +1,6 @@
 import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Pressable, Alert, Keyboard, ActivityIndicator } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { doc, getDoc, collection, setDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, collection, setDoc, serverTimestamp, updateDoc, addDoc } from 'firebase/firestore';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { useState, useEffect } from 'react';
 import { useFirebase } from '../db/FirebaseContext';
@@ -165,6 +165,13 @@ export default function Entrada({ navigation }: any) {
                                         const productoRef = doc(db, `Inventario/Categorias/${selectedCategoria}/${selectedProducto}`);
                                         const productoDoc = await getDoc(productoRef);
                                         if (productoDoc.exists()) {
+                                            if (productoDoc.data().cantActual < productoDoc.data().cantMin && productoDoc.data().cantActual + cantidad > productoDoc.data().cantMin) {
+                                                await addDoc(collection(db, 'Notificaciones'), {
+                                                    inStock: true,
+                                                    producto: doc(db, `Inventario/Categorias/${selectedCategoria}/${selectedProducto}`),
+                                                    fecha: serverTimestamp(),
+                                                });
+                                            }
                                             await updateDoc(productoRef, {
                                                 cantActual: productoDoc.data().cantActual + cantidad
                                             });

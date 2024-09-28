@@ -15,7 +15,7 @@ export default function MainMenu({ navigation }: any) {
                     <Pressable onPress={() => { if (auth) signOut(auth) }}>
                         <Ionicons name="log-out" style={styles.leftHeaderItem} />
                     </Pressable>
-                    <Pressable onPress={() => { if (auth) signOut(auth) }}>
+                    <Pressable onPress={() => { navigation.navigate('Notificaciones') }}>
                         <Ionicons name="notifications" style={styles.rightHeaderItem} />
                     </Pressable>
                 </View>
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: '100%',
         justifyContent: 'space-between',
-        paddingTop: 20,
+        paddingTop: 40,
     },
     leftHeaderItem: {
         paddingLeft: 20,

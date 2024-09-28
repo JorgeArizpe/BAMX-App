@@ -1,5 +1,7 @@
 import { collection, query, getDocs } from 'firebase/firestore';
 
+//Este es el fetch de productos que se usa en la pantalla de entrada y salida
+//este se usa para las dropdowns de productos ya que formatean los datos para que sean usados en el dropdown
 export const fetchProductos = async (db, selectedCategoria) => {
     try {
         if (db) {

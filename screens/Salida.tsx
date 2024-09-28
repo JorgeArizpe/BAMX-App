@@ -1,7 +1,7 @@
 import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Pressable, Alert, ActivityIndicator } from 'react-native';
 import { useEffect, useState } from 'react';
 import { ref, getDownloadURL } from 'firebase/storage';
-import { collection, doc, setDoc, serverTimestamp, getDoc, updateDoc } from 'firebase/firestore';
+import { collection, doc, setDoc, serverTimestamp, getDoc, updateDoc, addDoc } from 'firebase/firestore';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { fetchCategorias } from '../db/fetchCategorias';
 import { fetchProductos } from '../db/fetchProductos';
@@ -111,6 +111,13 @@ export default function Salida({ navigation }: any) {
                                             const productoRef = doc(db, `Inventario/Categorias/${selectedCategoria}/${selectedProducto}`);
                                             const productoDoc = await getDoc(productoRef);
                                             if (productoDoc.exists() && cantidad <= productoDoc.data().cantActual) {
+                                                if (productoDoc.data().cantActual > productoDoc.data().cantMin && productoDoc.data().cantActual - cantidad < productoDoc.data().cantMin) {
+                                                    await addDoc(collection(db, 'Notificaciones'), {
+                                                        inStock: false,
+                                                        producto: doc(db, `Inventario/Categorias/${selectedCategoria}/${selectedProducto}`),
+                                                        fecha: serverTimestamp(),
+                                                    });
+                                                }
                                                 await updateDoc(productoRef, {
                                                     cantActual: productoDoc.data().cantActual - cantidad
                                                 });
