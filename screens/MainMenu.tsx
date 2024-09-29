@@ -82,13 +82,13 @@ export default function MainMenu({ navigation }: any) {
                         <>
                             <Text>Administrador</Text>
                             <View style={styles.adminButtons}>
-                                <Pressable style={styles.adminButton} onPress={() => { navigation.navigate('Donantes') }}>
+                                <Pressable style={styles.adminButton} onPress={() => { navigation.navigate('Editar', { type: 'Donantes' }) }}>
                                     <Text>Donantes</Text>
                                 </Pressable>
-                                <Pressable style={styles.adminButton} onPress={() => { navigation.navigate('Usuarios') }}>
+                                <Pressable style={styles.adminButton} onPress={() => { navigation.navigate('Editar', { type: 'Usuarios' }) }}>
                                     <Text>Usuarios</Text>
                                 </Pressable>
-                                <Pressable style={styles.adminButton} onPress={() => { navigation.navigate('Productos') }}>
+                                <Pressable style={styles.adminButton} onPress={() => { navigation.navigate('Editar', { type: 'Productos' }) }}>
                                     <Text>Producto</Text>
                                 </Pressable>
                             </View>

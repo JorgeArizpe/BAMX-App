@@ -37,9 +37,11 @@ export default function CategoryItem({ title, navigation }: any) {
                         <View style={styles.imageContainer}>
                             <Image source={imageSource} style={styles.image} />
                         </View>
-                        <Text>
-                            placeholder
-                        </Text>
+                        <View style={styles.textContainer}>
+                            <Text style={styles.text}>
+                                Click para ver productos
+                            </Text>
+                        </View>
                     </View>
                 </View>
             </Pressable>
@@ -52,6 +54,15 @@ const styles = StyleSheet.create({
         borderWidth: 15,
         borderRadius: 10,
         borderColor: 'green',
+    },
+    text: {
+        fontSize: 16,
+        color: '#555555',
+    },
+    textContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     contentContainer: {
         flexDirection: 'row',

@@ -50,7 +50,7 @@ export default function InventarioDetalles({ navigation, route }: any) {
                     setOpen={setOpenProductos}
                     value={selectedProducto}
                     setValue={setSelectedProducto}
-                    placeholder="Producto"
+                    placeholder="Buscar producto"
                     searchable={true}
                     listMode='MODAL'
                     zIndex={1000}

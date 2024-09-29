@@ -70,7 +70,7 @@ export default function SignUp({ navigation }: any) {
                                         if (db) {
                                             var userCollection = doc(db, 'Usuarios', user.uid)
                                             await setDoc(userCollection, {
-                                                name: name,
+                                                nombre: name,
                                                 username: username,
                                                 email: email,
                                                 //editing permits

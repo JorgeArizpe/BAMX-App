@@ -41,7 +41,7 @@ export const reporte = async (db, dateInicio, dateFin, navigation, titulo, descr
 
             docRef = doc(db, docu.usuario.path);
             docSnap = await getDoc(docRef);
-            const usuarioNombre = docSnap.data()?.name || 'N/A';
+            const usuarioNombre = docSnap.data()?.nombre || 'N/A';
             fileContent += `usuario: ${usuarioNombre}\n`;
 
             if (docu.donante.path) {

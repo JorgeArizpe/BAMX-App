@@ -34,7 +34,7 @@ export default function HistorialItem({ item }: any) {
     }
 
     const timestamp = formatDistanceToNow(new Date(item.fecha.seconds * 1000), { addSuffix: true });
-    let alerta = `${item.tipo }: ${item.cantidad} ${producto.unidad} de ${producto.nombre} \npor ${usuario.name}\n${timestamp}`;
+    let alerta = `${item.tipo }: ${item.cantidad} ${producto.unidad} de ${producto.nombre} \npor ${usuario.nombre}\n${timestamp}`;
 
     if (donante) {
         alerta += `\nDonante: ${donante.nombre}`;

@@ -121,7 +121,7 @@ export default function RegistroProducto({ navigation }: any) {
                                 setOpen={setOpenCategorias}
                                 value={selectedCategoria}
                                 setValue={setSelectedCategoria}
-                                placeholder="Categoría"
+                                placeholder="Buscar categoría"
                                 zIndex={2000}
                                 zIndexInverse={3000}
                             />
@@ -134,7 +134,7 @@ export default function RegistroProducto({ navigation }: any) {
                                     setOpen={setOpenUnidades}
                                     value={selectedUnidad}
                                     setValue={setSelectedUnidad}
-                                    placeholder="Unidad"
+                                    placeholder="Buscar unidad"
                                     zIndex={2000}
                                     zIndexInverse={3000}
                                 />

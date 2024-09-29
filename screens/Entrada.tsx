@@ -96,7 +96,7 @@ export default function Entrada({ navigation }: any) {
                                 setOpen={setOpenDonante}
                                 value={selectedDonante}
                                 setValue={setSelectedDonante}
-                                placeholder="Donante"
+                                placeholder="Buscar donante"
                                 zIndex={2000}
                                 zIndexInverse={3000}
                                 searchable={true}
@@ -116,7 +116,7 @@ export default function Entrada({ navigation }: any) {
                                 setOpen={setOpenCategorias}
                                 value={selectedCategoria}
                                 setValue={setSelectedCategoria}
-                                placeholder="Categoría"
+                                placeholder="Buscar categoría"
                                 zIndex={2000}
                                 zIndexInverse={3000}
                             />
@@ -129,7 +129,7 @@ export default function Entrada({ navigation }: any) {
                                     setOpen={setOpenProductos}
                                     value={selectedProducto}
                                     setValue={setSelectedProducto}
-                                    placeholder="Producto"
+                                    placeholder="Buscar producto"
                                     searchable={true}
                                     listMode='MODAL'
                                     zIndex={1000}

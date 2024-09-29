@@ -71,7 +71,7 @@ export default function Salida({ navigation }: any) {
                                     setOpen={setOpenCategorias}
                                     value={selectedCategoria}
                                     setValue={setSelectedCategoria}
-                                    placeholder="Categoría"
+                                    placeholder="Buscar categoría"
                                     zIndex={2000}
                                     zIndexInverse={3000}
                                 />
@@ -84,7 +84,7 @@ export default function Salida({ navigation }: any) {
                                         setOpen={setOpenProductos}
                                         value={selectedProducto}
                                         setValue={setSelectedProducto}
-                                        placeholder="Producto"
+                                        placeholder="Buscar producto"
                                         zIndex={1000}
                                         zIndexInverse={2000}
                                         searchable={true}

@@ -11,3 +11,4 @@ export { default as Loading } from './Loading';
 export { default as RegistroDonante } from './RegistroDonante';
 export { default as InventarioDetalles } from './InventarioDetalles';
 export { default as Notificaciones } from './Notificaciones';
+export { default as Editar } from './Editar';
