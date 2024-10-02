@@ -42,10 +42,10 @@ export default function MainMenu({ navigation }: any) {
                     {usuario?.entradaSalida ?
                         <>
                             <Pressable style={styles.button} onPress={() => { navigation.navigate('Entrada') }}>
-                                <Text>Entrada de Producto</Text>
+                                <Text style={styles.buttonText}>Entrada de Producto</Text>
                             </Pressable>
                             <Pressable style={styles.button} onPress={() => { navigation.navigate('Salida') }}>
-                                <Text>Salida de Producto</Text>
+                                <Text style={styles.buttonText}>Salida de Producto</Text>
                             </Pressable>
                         </>
                         :
@@ -54,7 +54,7 @@ export default function MainMenu({ navigation }: any) {
                     {usuario?.inventario ?
                         <>
                             <Pressable style={styles.button} onPress={() => { navigation.navigate('Inventario') }}>
-                                <Text>Inventario</Text>
+                                <Text style={styles.buttonText}>Inventario</Text>
                             </Pressable>
                         </>
                         :
@@ -63,7 +63,7 @@ export default function MainMenu({ navigation }: any) {
                     {usuario?.reporte ?
                         <>
                             <Pressable style={styles.button} onPress={() => { navigation.navigate('Reporte') }}>
-                                <Text>Reporte</Text>
+                                <Text style={styles.buttonText}>Reporte</Text>
                             </Pressable>
                         </>
                         :
@@ -72,7 +72,7 @@ export default function MainMenu({ navigation }: any) {
                     {usuario?.historial ?
                         <>
                             <Pressable style={styles.button} onPress={() => { navigation.navigate('Historial') }}>
-                                <Text>Historial</Text>
+                                <Text style={styles.buttonText}>Historial</Text>
                             </Pressable>
                         </>
                         :
@@ -83,13 +83,13 @@ export default function MainMenu({ navigation }: any) {
                             <Text>Administrador</Text>
                             <View style={styles.adminButtons}>
                                 <Pressable style={styles.adminButton} onPress={() => { navigation.navigate('Editar', { type: 'Donantes' }) }}>
-                                    <Text>Donantes</Text>
+                                    <Text style={styles.buttonText}>Donante</Text>
                                 </Pressable>
                                 <Pressable style={styles.adminButton} onPress={() => { navigation.navigate('Editar', { type: 'Usuarios' }) }}>
-                                    <Text>Usuarios</Text>
+                                    <Text style={styles.buttonText}>Usuarios</Text>
                                 </Pressable>
                                 <Pressable style={styles.adminButton} onPress={() => { navigation.navigate('Editar', { type: 'Productos' }) }}>
-                                    <Text>Producto</Text>
+                                    <Text style={styles.buttonText}>Producto</Text>
                                 </Pressable>
                             </View>
                         </>
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: 310,
         height: 60,
-        backgroundColor: 'lightblue',
+        backgroundColor: '#CE0F2C',
         justifyContent: 'center',
     },
     logo: {
@@ -171,7 +171,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: 90,
         height: 60,
-        backgroundColor: 'lightblue',
+        backgroundColor: '#CE0F2C',
         justifyContent: 'center',
-    }
+    },
+    buttonText: {
+        color: 'white',
+        fontWeight: 'bold',
+    },
 });

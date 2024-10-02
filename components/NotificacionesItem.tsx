@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { useFirebase } from '../db/FirebaseContext';
 import { doc, getDoc } from 'firebase/firestore';
+
 export default function NotificacionesItem({ item }: any) {
     const { db } = useFirebase();
     const [producto, setProducto] = useState<any>(null);
@@ -49,7 +50,7 @@ export default function NotificacionesItem({ item }: any) {
         <View style={styles.notificationContainer}>
             <Text style={styles.timestamp}>{timestamp}</Text>
             <Text style={{ paddingBottom: 10 }}>
-                {item.inStock ? 'Se ha restockado' : 'Ha llegado al minimo'} {producto.nombre}
+            {producto.nombre} {item.inStock ? 'se ha reabastecido' : 'ha llegado al minimo'} 
             </Text>
         </View>
     );
