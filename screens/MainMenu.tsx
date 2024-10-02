@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useFirebase } from '../db/FirebaseContext';
 import { doc, getDoc } from 'firebase/firestore';
 import Ionicons from '@expo/vector-icons/Ionicons';
+
 const background = require('../assets/backgroundMain.png');
 const logo = require('../assets/manzana_logo.png');
 
@@ -119,7 +120,7 @@ const styles = StyleSheet.create({
     button: {
         padding: 10,
         margin: 10,
-        borderRadius: 5,
+        borderRadius: 30,
         alignItems: 'center',
         width: 310,
         height: 60,
@@ -167,7 +168,7 @@ const styles = StyleSheet.create({
     adminButton: {
         padding: 10,
         margin: 10,
-        borderRadius: 5,
+        borderRadius: 20,
         alignItems: 'center',
         width: 90,
         height: 60,
