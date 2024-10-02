@@ -73,6 +73,7 @@ export default function SignUp({ navigation }: any) {
                                                 nombre: name,
                                                 username: username,
                                                 email: email,
+                                                notifRead: 0,
                                                 //editing permits
                                                 inventario: true,
                                                 historial: true,

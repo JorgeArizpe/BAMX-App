@@ -2,7 +2,7 @@ import { Text, View, StyleSheet, ImageBackground, Pressable, Image, ActivityIndi
 import { signOut } from 'firebase/auth';
 import { useState, useEffect } from 'react';
 import { useFirebase } from '../db/FirebaseContext';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, onSnapshot, collection, updateDoc } from 'firebase/firestore';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 const background = require('../assets/backgroundMain.png');
@@ -12,15 +12,30 @@ export default function MainMenu({ navigation }: any) {
     const { auth, db } = useFirebase();
     const currentUser = auth?.currentUser;
     const [usuario, setUsuario] = useState<any>(null);
+    const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
+    const [totalNotificaciones, setTotalNotificaciones] = useState(0);
 
     useEffect(() => {
         if (db && currentUser) {
             const usuarioRef = doc(db, 'Usuarios', currentUser.uid);
-            getDoc(usuarioRef).then((doc) => {
-                if (doc.exists()) {
-                    setUsuario(doc.data());
+            const unsubscribeUser = onSnapshot(usuarioRef, async (docSnapshot) => {
+                if (docSnapshot.exists()) {
+                    const userData = docSnapshot.data();
+                    setUsuario(userData);
+                    const notificationsQuery = collection(db, 'Notificaciones');
+                    const unsubscribeNotifications = onSnapshot(notificationsQuery, (snapshot) => {
+                        const totalNotificaciones = snapshot.size;
+                        setTotalNotificaciones(totalNotificaciones);
+                        if (userData.notifRead < totalNotificaciones) {
+                            setHasUnreadNotifications(true);
+                        } else {
+                            setHasUnreadNotifications(false);
+                        }
+                    });
+                    return () => unsubscribeNotifications();
                 }
             });
+            return () => unsubscribeUser();
         }
     }, [db]);
 
@@ -31,8 +46,21 @@ export default function MainMenu({ navigation }: any) {
                     <Pressable onPress={() => { if (auth) signOut(auth) }}>
                         <Ionicons name="log-out" style={styles.leftHeaderItem} />
                     </Pressable>
-                    <Pressable onPress={() => { navigation.navigate('Notificaciones') }}>
-                        <Ionicons name="notifications" style={styles.rightHeaderItem} />
+                    <Pressable onPress={() => {
+                        if (db && usuario && currentUser?.uid) {
+                            updateDoc(doc(db, 'Usuarios', currentUser?.uid), { notifRead: totalNotificaciones })
+                                .then(() => {
+                                    console.log('Successfully updated notifRead');
+                                    navigation.navigate('Notificaciones');
+                                })
+                                .catch((error) => {
+                                    console.error('Error updating notifRead:', error);
+                                });
+                        } else {
+                            console.error('Missing db, usuario, or usuario.uid:', { db: !!db, usuario: !!usuario, uid: usuario?.uid });
+                        }
+                    }}>
+                        <Ionicons name={hasUnreadNotifications ? "notifications" : "notifications-outline"} style={styles.rightHeaderItem} />
                     </Pressable>
                 </View>
                 <Image source={logo} style={styles.logo} />
