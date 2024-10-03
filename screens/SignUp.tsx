@@ -26,7 +26,7 @@ export default function SignUp({ navigation }: any) {
                         <Ionicons name="arrow-back" style={styles.backArrow} />
                     </Pressable>
                 </View>
-                <Image source={logo} style={{ width: 150, height: 150, resizeMode: 'contain', margin: 20, }} />
+                <Image source={logo} style={{ width: 150, height: 150, resizeMode: 'contain', margin: 20, marginTop: 50 }} />
                 <TextInput
                     style={styles.input}
                     placeholder='Nombre Completo'
@@ -48,12 +48,14 @@ export default function SignUp({ navigation }: any) {
                 <TextInput
                     style={styles.input}
                     placeholder='Contraseña'
+                    secureTextEntry={true}
                     onChangeText={text => {
                         setPassword(text);
                     }} />
                 <TextInput
                     style={styles.input}
                     placeholder='Confirmar Contraseña'
+                    secureTextEntry={true}
                     onChangeText={text => {
                         setConfirmPassword(text);
                     }} />
@@ -94,7 +96,6 @@ export default function SignUp({ navigation }: any) {
                     }}>
                     <Text style={{ color: 'black' }}>CREAR CUENTA</Text>
                 </Pressable>
-                <Image source={text_logo} style={{ width: 150, height: 80, resizeMode: 'contain', marginBottom: 125 }} />
             </ImageBackground>
             <StatusBar style="auto" />
         </View>
@@ -107,7 +108,6 @@ const styles = StyleSheet.create({
     },
     back: {
         flex: 1,
-        justifyContent: 'center',
         alignItems: 'center',
     },
     input: {
