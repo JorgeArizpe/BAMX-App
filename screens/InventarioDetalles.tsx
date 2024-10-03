@@ -20,7 +20,7 @@ export default function InventarioDetalles({ navigation, route }: any) {
         setRefreshing(true);
         await getProductos(setProductos, db, title).then(() => {
             setProductosFormated([
-                { label: "Show All", value: null },
+                { label: "Todos", value: null },
                 ...productos.map(producto => ({ label: producto.nombre, value: producto.id }))
             ]);
             setRefreshing(false);
@@ -33,7 +33,7 @@ export default function InventarioDetalles({ navigation, route }: any) {
 
     useEffect(() => {
         setProductosFormated([
-            { label: "Show All", value: null },
+            { label: "Todos", value: null },
             ...productos.map(producto => ({ label: producto.nombre, value: producto.id }))
         ]);
         setLoading(false);
