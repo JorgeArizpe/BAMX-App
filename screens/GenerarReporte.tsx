@@ -40,7 +40,7 @@ export default function GenerarReporte({ navigation }: any) {
                 </View>
 
                 <View style={styles.contentContainer}>
-                    <TextInput style={styles.input} placeholder='Titulo' value={titulo} onChangeText={setTitulo} />
+                    <TextInput style={styles.input} placeholder='Titulo' onChangeText={setTitulo} />
                     <View style={styles.label}>
                         <View>
                             <Pressable style={styles.dateButton} onPress={() => setShowPickerInicio(true)}>
@@ -89,11 +89,11 @@ export default function GenerarReporte({ navigation }: any) {
                         </View>
                     </View>
 
-                    <TextInput style={[styles.input, styles.descriptionInput]} placeholder="Descripción" value={descripcion} onChangeText={setDescripcion} />
+                    <TextInput style={[styles.input, styles.descriptionInput]} placeholder="Descripción" onChangeText={setDescripcion} />
 
                     {isLoading ? (
                         <View style={styles.loadingContainer}>
-                            <ActivityIndicator size="large" color="#0000ff" />
+                            <ActivityIndicator size="large" color="#000" />
                             <Text style={styles.loadingText}>Cargando...</Text>
                         </View>
 

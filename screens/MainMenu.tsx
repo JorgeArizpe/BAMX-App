@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, ImageBackground, Pressable, Image, ActivityIndicator } from 'react-native';
+import { Text, View, StyleSheet, ImageBackground, Pressable, Image, ActivityIndicator, Dimensions } from 'react-native';
 import { signOut } from 'firebase/auth';
 import { useState, useEffect } from 'react';
 import { useFirebase } from '../db/FirebaseContext';
@@ -7,6 +7,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 const background = require('../assets/backgroundMain.png');
 const logo = require('../assets/manzana_logo.png');
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export default function MainMenu({ navigation }: any) {
     const { auth, db } = useFirebase();
@@ -65,7 +66,7 @@ export default function MainMenu({ navigation }: any) {
                 </View>
                 <Image source={logo} style={styles.logo} />
                 <Text style={styles.welcome}>{usuario ? `Bienvenido, ${usuario.username}` : 'Cargando...'}</Text>
-                {usuario ? <Text style={styles.welcome}>Menu Principal</Text> : <ActivityIndicator size="large" color="#0000ff" />}
+                {usuario ? <Text style={styles.welcome}>Menu Principal</Text> : <ActivityIndicator size="large" color="#000" />}
 
                 <View style={styles.menu}>
                     {usuario?.entradaSalida ?
@@ -112,13 +113,13 @@ export default function MainMenu({ navigation }: any) {
                             <Text>Administrador</Text>
                             <View style={styles.adminButtons}>
                                 <Pressable style={styles.adminButton} onPress={() => { navigation.navigate('Editar', { type: 'Donantes' }) }}>
-                                    <Text style={styles.buttonText}>Donante</Text>
+                                    <Text style={styles.adminButtonText}>Donante</Text>
                                 </Pressable>
                                 <Pressable style={styles.adminButton} onPress={() => { navigation.navigate('Editar', { type: 'Usuarios' }) }}>
-                                    <Text style={styles.buttonText}>Usuarios</Text>
+                                    <Text style={styles.adminButtonText}>Usuarios</Text>
                                 </Pressable>
                                 <Pressable style={styles.adminButton} onPress={() => { navigation.navigate('Editar', { type: 'Productos' }) }}>
-                                    <Text style={styles.buttonText}>Producto</Text>
+                                    <Text style={styles.adminButtonText}>Producto</Text>
                                 </Pressable>
                             </View>
                         </>
@@ -145,16 +146,6 @@ const styles = StyleSheet.create({
         width: 200,
         backgroundColor: 'lightgray',
     },
-    button: {
-        padding: 10,
-        margin: 10,
-        borderRadius: 30,
-        alignItems: 'center',
-        width: 310,
-        height: 60,
-        backgroundColor: '#CE0F2C',
-        justifyContent: 'center',
-    },
     logo: {
         width: 150,
         height: 150,
@@ -165,11 +156,6 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         textAlign: 'center',
-    },
-    menu: {
-        marginTop: '5%',
-        width: '80%',
-        alignItems: 'center',
     },
     headerContainer: {
         flexDirection: 'row',
@@ -188,23 +174,46 @@ const styles = StyleSheet.create({
         fontSize: 35,
         color: 'white',
     },
+    button: {
+        padding: '2.5%',
+        margin: '2.5%',
+        borderRadius: 30,
+        alignItems: 'center',
+        width: '80%',
+        height: SCREEN_WIDTH * 0.125,
+        backgroundColor: '#CE0F2C',
+        justifyContent: 'center',
+    },
+    menu: {
+        marginTop: '5%',
+        width: '100%',
+        alignItems: 'center',
+    },
     adminButtons: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         flexWrap: 'wrap',
+        width: '80%',
     },
     adminButton: {
-        padding: 10,
-        margin: 10,
+        padding: '2%',
+        margin: '1%',
         borderRadius: 20,
         alignItems: 'center',
-        width: 90,
-        height: 60,
+        width: '30%', 
+        aspectRatio: 1.5, 
         backgroundColor: '#CE0F2C',
         justifyContent: 'center',
     },
     buttonText: {
         color: 'white',
         fontWeight: 'bold',
+        fontSize: SCREEN_WIDTH * 0.04,
+    },
+    adminButtonText: {
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: SCREEN_WIDTH * 0.03, 
+        textAlign: 'center',
     },
 });

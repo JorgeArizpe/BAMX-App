@@ -1,4 +1,4 @@
-import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Pressable, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Pressable, Alert, ActivityIndicator, ImageSourcePropType } from 'react-native';
 import { useEffect, useState } from 'react';
 import { ref, getDownloadURL } from 'firebase/storage';
 import { collection, doc, setDoc, serverTimestamp, getDoc, updateDoc, addDoc } from 'firebase/firestore';
@@ -9,7 +9,6 @@ import { useFirebase } from '../db/FirebaseContext';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 const background = require('../assets/backgroundMainSmall.png');
-const placeholder = require('../assets/inventarioPlaceholder.png');
 
 export default function Salida({ navigation }: any) {
     const { db, storage, auth } = useFirebase();
@@ -18,7 +17,7 @@ export default function Salida({ navigation }: any) {
     const [productos, setProductos] = useState<any[]>([]);    // Second dropdown list
     const [selectedCategoria, setSelectedCategoria] = useState(null); // Selected category
     const [selectedProducto, setSelectedProducto] = useState(null);   // Selected product
-    const [image, setImage] = useState(placeholder);
+    const [image, setImage] = useState<ImageSourcePropType | null>(null);
     const [cantidad, setCantidad] = useState(0);
     const [openCategorias, setOpenCategorias] = useState(false);
     const [openProductos, setOpenProductos] = useState(false);
@@ -41,9 +40,10 @@ export default function Salida({ navigation }: any) {
                 setImage({ uri: url });
             }).catch((error) => {
                 console.log(error);
+                setImage(null);
             });
         } else {
-            setImage(placeholder);
+            setImage(null);
         }
     }, [storage, selectedProducto]);
 
@@ -58,10 +58,14 @@ export default function Salida({ navigation }: any) {
                 </View>
 
                 <View style={styles.content}>
-                    <Image
-                        source={image}
-                        style={styles.productImage}
-                    />
+                    {image ? (
+                        <Image
+                            source={image}
+                            style={styles.productImage}
+                        />
+                    ) : (
+                        <View style={styles.emptyImageContainer} />
+                    )}
                     <View style={styles.inputContainer}>
                         <View>
                             <View style={[styles.searchInputContainer, { zIndex: openCategorias ? 2000 : 0 }]}>
@@ -103,7 +107,7 @@ export default function Salida({ navigation }: any) {
                                     />
                                 )}
                             </View>
-                            {isLoading ? <ActivityIndicator size="small" color="#0000ff" /> :
+                            {isLoading ? <ActivityIndicator size="small" color="#000" /> :
                                 <TouchableOpacity style={styles.confirmButton} onPress={async () => {
                                     if (selectedProducto !== '' && cantidad > 0 && db && currentUser) {
                                         setIsLoading(true);
@@ -198,6 +202,15 @@ const styles = StyleSheet.create({
         borderWidth: 8,
         borderColor: 'darkred',
     },
+    emptyImageContainer: {
+        width: '90%',
+        height: 200,
+        borderRadius: 10,
+        marginVertical: 20,
+        borderWidth: 8,
+        borderColor: 'darkred',
+        backgroundColor: 'transparent',
+    },
     inputContainer: {
         backgroundColor: '#d9d9d9',
         borderRadius: 10,
@@ -238,7 +251,7 @@ const styles = StyleSheet.create({
         borderBottomRightRadius: 5,
     },
     confirmButton: {
-        backgroundColor: '#ffd700',
+        backgroundColor: '#F5A700',
         borderRadius: 5,
         padding: 15,
         alignItems: 'center',

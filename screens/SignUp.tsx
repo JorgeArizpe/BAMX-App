@@ -130,7 +130,6 @@ const styles = StyleSheet.create({
         width: '100%',
         justifyContent: 'space-between',
         paddingTop: 40,
-        paddingHorizontal: 20,
     },
     backArrow: {
         fontSize: 40,
@@ -139,6 +138,5 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 10,
         borderBottomRightRadius: 10,
         paddingLeft: 20,
-        marginLeft: -20,
     },
 });

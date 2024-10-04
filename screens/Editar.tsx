@@ -127,7 +127,7 @@ export default function Editar({ navigation, route }: any) {
                                     onChangeText={(text) => setProductData({ ...productData, unidad: text })}
                                 />
                                 {isLoading ? (
-                                    <ActivityIndicator size="large" color="#0000ff" />
+                                    <ActivityIndicator size="large" color="#000" />
                                 ) : (
                                     <TouchableOpacity style={styles.confirmButton} onPress={handleUpdateProduct}>
                                         <Text style={styles.confirmButtonText}>Confirmar cambios</Text>
@@ -225,7 +225,7 @@ export default function Editar({ navigation, route }: any) {
                                     keyboardType="email-address"
                                 />
                                 {isLoading ? (
-                                    <ActivityIndicator size="large" color="#0000ff" />
+                                    <ActivityIndicator size="large" color="#000" />
                                 ) : (
                                     <TouchableOpacity style={styles.confirmButton} onPress={handleUpdateDonante}>
                                         <Text style={styles.confirmButtonText}>Confirmar cambios</Text>
@@ -351,7 +351,7 @@ export default function Editar({ navigation, route }: any) {
                                     />
                                 </View>
                                 {isLoading ? (
-                                    <ActivityIndicator size="large" color="#0000ff" />
+                                    <ActivityIndicator size="large" color="#000" />
                                 ) : (
                                     <TouchableOpacity style={styles.confirmButton} onPress={handleUpdateUser}>
                                         <Text style={styles.confirmButtonText}>Confirmar cambios</Text>
@@ -372,7 +372,7 @@ const styles = StyleSheet.create({
     },
     userDataContainer: {
         width: '100%',
-        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        backgroundColor: 'white',
         padding: 20,
         borderRadius: 10,
     },
@@ -389,7 +389,7 @@ const styles = StyleSheet.create({
     },
     donanteDataContainer: {
         width: '100%',
-        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        backgroundColor: 'white',
         padding: 20,
         borderRadius: 10,
     },
@@ -432,10 +432,11 @@ const styles = StyleSheet.create({
     dropdownContainer: {
         width: '100%',
         marginBottom: 20,
+        paddingHorizontal: 20,
     },
     productDataContainer: {
         width: '100%',
-        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        backgroundColor: 'white',
         padding: 20,
         borderRadius: 10,
     },

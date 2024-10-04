@@ -1,4 +1,4 @@
-import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Pressable, Alert, Keyboard, ActivityIndicator } from 'react-native';
+import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Pressable, Alert, Keyboard, ActivityIndicator, ImageSourcePropType } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { doc, getDoc, collection, setDoc, serverTimestamp, updateDoc, addDoc } from 'firebase/firestore';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -10,7 +10,6 @@ import { fetchProductos } from '../db/fetchProductos';
 import { fetchDonantes } from '../db/fetchDonantes';
 
 const background = require('../assets/backgroundMainSmall.png');
-const placeholder = require('../assets/inventarioPlaceholder.png');
 
 export default function Entrada({ navigation }: any) {
     const { db, storage, auth } = useFirebase();
@@ -23,7 +22,7 @@ export default function Entrada({ navigation }: any) {
     const [selectedProducto, setSelectedProducto] = useState(null);   // Selected product
     const [cantidad, setCantidad] = useState(0);
     const [donante, setDonante] = useState<any[]>([]);
-    const [image, setImage] = useState(placeholder);
+    const [image, setImage] = useState<ImageSourcePropType | null>(null);
     const [openCategorias, setOpenCategorias] = useState(false);
     const [openProductos, setOpenProductos] = useState(false);
     const [openDonante, setOpenDonante] = useState(false);
@@ -67,9 +66,10 @@ export default function Entrada({ navigation }: any) {
                 setImage({ uri: url });
             }).catch((error) => {
                 console.log(error);
+                setImage(null);
             });
         } else {
-            setImage(placeholder);
+            setImage(null);
         }
     }, [storage, selectedProducto]);
 
@@ -84,10 +84,14 @@ export default function Entrada({ navigation }: any) {
                 </View>
 
                 <View style={styles.content}>
-                    <Image
-                        source={image}
-                        style={styles.productImage}
-                    />
+                    {image ? (
+                        <Image
+                            source={image}
+                            style={styles.productImage}
+                        />
+                    ) : (
+                        <View style={styles.emptyImageContainer} />
+                    )}
                     <View style={styles.inputContainer}>
                         <View style={[styles.searchInputContainer, { zIndex: openDonante ? 3000 : 10 }]}>
                             <DropDownPicker
@@ -148,7 +152,7 @@ export default function Entrada({ navigation }: any) {
                                 />
                             )}
                         </View>
-                        {isLoading ? <ActivityIndicator size="small" color="#0000ff" /> :
+                        {isLoading ? <ActivityIndicator size="small" color="#000" /> :
                             <TouchableOpacity style={styles.confirmButton} onPress={async () => {
                                 if (selectedDonante !== '' && selectedProducto !== '' && cantidad > 0 && db && currentUser) {
                                     setIsLoading(true);
@@ -250,6 +254,15 @@ const styles = StyleSheet.create({
         borderWidth: 8,
         borderColor: 'darkred',
     },
+    emptyImageContainer: {
+        width: '90%',
+        height: 200,
+        borderRadius: 10,
+        marginVertical: 20,
+        borderWidth: 8,
+        borderColor: 'darkred',
+        backgroundColor: 'transparent',
+    },
     inputContainer: {
         backgroundColor: '#d9d9d9',
         borderRadius: 10,
@@ -281,7 +294,7 @@ const styles = StyleSheet.create({
         padding: 10,
     },
     confirmButton: {
-        backgroundColor: '#ffd700',
+        backgroundColor: '#F5A700',
         borderRadius: 5,
         padding: 15,
         alignItems: 'center',

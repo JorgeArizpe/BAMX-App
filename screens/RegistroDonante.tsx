@@ -44,7 +44,7 @@ export default function RegistroDonante({ navigation }: any) {
                                     style={styles.input}
                                 />
                             </View>
-                            {isLoading ? <ActivityIndicator size="small" color="#0000ff" /> :
+                            {isLoading ? <ActivityIndicator size="small" color="#000" /> :
                                 <TouchableOpacity style={styles.confirmButton} onPress={async () => {
                                     if (nombre !== '' && email !== '' && db && currentUser) {
                                         setIsLoading(true);

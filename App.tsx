@@ -137,17 +137,18 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 50,
   },
   headerTitleContainer: {
-    backgroundColor: '#d3d3d3',
-    paddingHorizontal: 20,
+    backgroundColor: '#CE0F2C',
     paddingVertical: 5,
     borderRadius: 10,
     alignSelf: 'center',
-    width: 270,
+    width: '80%',
+    maxWidth: 270,
   },
   headerTitle: {
     fontSize: 18,
-    color: '#333',
+    color: '#FFF',
     textAlign: 'center',
+    fontWeight: 'bold',
   },
   headerRightImage: {
     width: 50,

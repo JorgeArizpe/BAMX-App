@@ -153,7 +153,7 @@ export default function RegistroProducto({ navigation }: any) {
                         </View>
                     </View>
                     <View style={styles.addButtonContainer}>
-                        {isLoading ? <ActivityIndicator size="small" color="#0000ff" /> :
+                        {isLoading ? <ActivityIndicator size="small" color="#000" /> :
                             <TouchableOpacity style={[styles.addButton, { zIndex: openCategorias || openUnidades ? -1 : 1000 }]} onPress={handleAddProduct}>
                                 <Text style={{ fontWeight: 'bold' }}>Agregar</Text>
                             </TouchableOpacity>
@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
         color: '#525252',
     },
     addButton: {
-        backgroundColor: '#FFC107',
+        backgroundColor: '#F5A700',
         borderRadius: 10,
         padding: 15,
         width: '90%',

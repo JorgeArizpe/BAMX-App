@@ -26,7 +26,7 @@ export default function Inventario({ navigation }: any) {
                         renderItem={({ item }) => <CategoryItem title={item} navigation={navigation} />}
                     />
                     :
-                    <ActivityIndicator size="large" color="#0000ff" />
+                    <ActivityIndicator size="large" color="#000" />
             }
         </View>
     );

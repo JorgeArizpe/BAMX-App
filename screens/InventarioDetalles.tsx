@@ -1,4 +1,4 @@
-import { StyleSheet, View, FlatList, ActivityIndicator, RefreshControl } from 'react-native';
+import { StyleSheet, View, FlatList, ActivityIndicator, RefreshControl, Text } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { useState, useEffect } from 'react';
 import { useFirebase } from '../db/FirebaseContext';
@@ -67,7 +67,7 @@ export default function InventarioDetalles({ navigation, route }: any) {
                         cantMin={selectedProductData.cantMin}
                     />
                 ) : (
-                    <ActivityIndicator size="large" color="#0000ff" />
+                    <ActivityIndicator size="large" color="#000" />
                 )
             ) : (
                 productos.length > 0 ? (
@@ -89,7 +89,7 @@ export default function InventarioDetalles({ navigation, route }: any) {
                         }
                     />
                 ) : (
-                    <ActivityIndicator size="large" color="#0000ff" />
+                    <Text style={styles.text}>No hay productos</Text>
                 )
             )}
         </View>
@@ -102,4 +102,10 @@ const styles = StyleSheet.create({
         padding: 20,
         backgroundColor: 'white',
     },
+    text: {
+        textAlign: 'center',
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginTop: 20,
+    }
 });

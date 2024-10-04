@@ -15,17 +15,14 @@ export const uploadImage = async (image, nombre, storage) => {
         uploadTask.on(
             'state_changed',
             (snapshot) => {
-                // Optional: You can monitor upload progress here if needed
                 const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                 console.log(`Upload is ${progress}% done`);
             },
             (error) => {
-                // Error handling
                 console.error("Upload failed", error);
                 reject(error);
             },
             async () => {
-                // When the upload completes successfully
                 try {
                     const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
                     resolve(downloadURL);
