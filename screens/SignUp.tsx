@@ -8,7 +8,6 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 const background = require('../assets/background.png');
 const logo = require('../assets/manzana_logo.png');
-const text_logo = require('../assets/texto_logo.png');
 
 export default function SignUp({ navigation }: any) {
     const { auth, db } = useFirebase();

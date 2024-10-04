@@ -44,7 +44,7 @@ export default function RegistroProducto({ navigation }: any) {
     }, [db]);
 
     const handleAddProduct = async () => {
-        if (nombre === '' || selectedCategoria === null || selectedUnidad === null || cantidad === 0) {
+        if (nombre === '' || selectedCategoria === null || selectedUnidad === null || cantidad === 0 || image === '') {
             Alert.alert('Error', 'Por favor, completa todos los campos.');
             return;
         }
