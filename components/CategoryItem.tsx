@@ -79,12 +79,13 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 18,
         color: '#555555',
-        backgroundColor: '#f8c208',
+        backgroundColor: '#F5A700',
         padding: 5,
-        borderRadius: 20,
+        borderRadius: 10,
         position: 'absolute',
-        top: -15,
+        top: -10,
         alignSelf: 'center',
         zIndex: 1,
+        overflow: 'hidden',
     },
 });

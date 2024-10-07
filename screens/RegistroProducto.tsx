@@ -153,11 +153,13 @@ export default function RegistroProducto({ navigation }: any) {
                         </View>
                     </View>
                     <View style={styles.addButtonContainer}>
-                        {isLoading ? <ActivityIndicator size="small" color="#000" /> :
-                            <TouchableOpacity style={[styles.addButton, { zIndex: openCategorias || openUnidades ? -1 : 1000 }]} onPress={handleAddProduct}>
+                        {isLoading ? (
+                            <ActivityIndicator size="small" color="#000" />
+                        ) : !openCategorias && !openUnidades ? (
+                            <TouchableOpacity style={styles.addButton} onPress={handleAddProduct}>
                                 <Text style={{ fontWeight: 'bold' }}>Agregar</Text>
                             </TouchableOpacity>
-                        }
+                        ) : null}
                     </View>
                 </View>
             </ImageBackground>
@@ -173,6 +175,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
+        minHeight: 50,
+        marginTop: 20,
     },
     uploadedImage: {
         width: '100%',

@@ -135,8 +135,9 @@ const styles = StyleSheet.create({
         fontSize: 40,
         color: 'white',
         backgroundColor: '#CE0F2C',
-        borderTopRightRadius: 10,
-        borderBottomRightRadius: 10,
+        borderRadius: 10,
+        marginLeft: -15,
         paddingLeft: 20,
+        overflow: 'hidden',
     },
 });

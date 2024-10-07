@@ -90,7 +90,7 @@ export default function Entrada({ navigation }: any) {
                             style={styles.productImage}
                         />
                     ) : (
-                        <View style={styles.emptyImageContainer} />
+                        <></>
                     )}
                     <View style={styles.inputContainer}>
                         <View style={[styles.searchInputContainer, { zIndex: openDonante ? 3000 : 10 }]}>
@@ -253,15 +253,6 @@ const styles = StyleSheet.create({
         marginVertical: 20,
         borderWidth: 8,
         borderColor: 'darkred',
-    },
-    emptyImageContainer: {
-        width: '90%',
-        height: 200,
-        borderRadius: 10,
-        marginVertical: 20,
-        borderWidth: 8,
-        borderColor: 'darkred',
-        backgroundColor: 'transparent',
     },
     inputContainer: {
         backgroundColor: '#d9d9d9',

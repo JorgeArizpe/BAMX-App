@@ -48,7 +48,7 @@ const screenOptions = ({ navigation }: any) => ({
   ),
   headerLeft: () => (
     <Pressable onPress={() => navigation.goBack()}>
-      <Ionicons name="arrow-back" style={[styles.backArrow, { marginLeft: -20, marginRight: 20 }]} />
+      <Ionicons name="arrow-back" style={[styles.backArrow, { marginLeft: -30 }]} />
     </Pressable>
   ),
 });
@@ -133,16 +133,18 @@ const styles = StyleSheet.create({
     color: 'white',
     backgroundColor: '#CE0F2C',
     paddingLeft: 20,
-    borderTopRightRadius: 50,
-    borderBottomRightRadius: 50,
+    borderRadius: 10,
+    overflow: 'hidden',
   },
   headerTitleContainer: {
     backgroundColor: '#CE0F2C',
     paddingVertical: 5,
     borderRadius: 10,
-    alignSelf: 'center',
     width: '80%',
     maxWidth: 270,
+    paddingHorizontal: 40,
+    alignSelf: 'center',
+    marginHorizontal: 10,
   },
   headerTitle: {
     fontSize: 18,
@@ -153,7 +155,6 @@ const styles = StyleSheet.create({
   headerRightImage: {
     width: 50,
     height: 50,
-    marginRight: 15,
     resizeMode: 'contain',
   },
 });
