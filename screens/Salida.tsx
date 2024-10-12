@@ -35,13 +35,23 @@ export default function Salida({ navigation }: any) {
 
     useEffect(() => {
         if (selectedProducto && storage) {
-            const storageRef = ref(storage, 'Productos/' + selectedProducto + '.png');
-            getDownloadURL(storageRef).then((url) => {
-                setImage({ uri: url });
-            }).catch((error) => {
-                console.log(error);
+            const extensions = ['png', 'jpg', 'jpeg'];
+            const fetchImage = async () => {
+                for (const ext of extensions) {
+                    const storageRef = ref(storage, `Productos/${selectedProducto}.${ext}`);
+                    try {
+                        const url = await getDownloadURL(storageRef);
+                        setImage({ uri: url });
+                        return;
+                    } catch (error) {
+                        console.log(`No ${ext} image found for ${selectedProducto}`);
+                    }
+                }
+                console.log(`No image found for ${selectedProducto}`);
                 setImage(null);
-            });
+            };
+    
+            fetchImage();
         } else {
             setImage(null);
         }
