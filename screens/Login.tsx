@@ -18,7 +18,7 @@ export default function Login({ navigation }: any) {
             signInWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
                     const user = userCredential.user;
-                    console.log('Usuario autenticado:', user);
+                    //console.log('Usuario autenticado:', user);
                     navigation.reset({
                         index: 0,
                         routes: [{ name: 'MainMenu' }],

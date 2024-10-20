@@ -19,10 +19,10 @@ export default function CategoryItem({ title, navigation }: any) {
                     setImageSource({ uri: url });
                     return;
                 } catch (error) {
-                    console.log(`No ${ext} image found for ${title}`);
+                    //console.log(`No ${ext} image found for ${title}`);
                 }
             }
-            console.log(`No image found for ${title}`);
+            //console.log(`No image found for ${title}`);
         };
 
         fetchImage();

@@ -44,10 +44,10 @@ export default function Salida({ navigation }: any) {
                         setImage({ uri: url });
                         return;
                     } catch (error) {
-                        console.log(`No ${ext} image found for ${selectedProducto}`);
+                        //console.log(`No ${ext} image found for ${selectedProducto}`);
                     }
                 }
-                console.log(`No image found for ${selectedProducto}`);
+                //console.log(`No image found for ${selectedProducto}`);
                 setImage(null);
             };
     

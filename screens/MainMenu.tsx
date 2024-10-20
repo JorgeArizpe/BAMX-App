@@ -51,7 +51,7 @@ export default function MainMenu({ navigation }: any) {
                         if (db && usuario && currentUser?.uid) {
                             updateDoc(doc(db, 'Usuarios', currentUser?.uid), { notifRead: totalNotificaciones })
                                 .then(() => {
-                                    console.log('Successfully updated notifRead');
+                                    //console.log('Successfully updated notifRead');
                                     navigation.navigate('Notificaciones');
                                 })
                                 .catch((error) => {

@@ -20,10 +20,10 @@ export default function InventoryItem({ nombre, cantActual, unidad, cantMin }: a
                     setImageSource({ uri: url });
                     return;
                 } catch (error) {
-                    console.log(`No ${ext} image found for ${nombre}`);
+                    //console.log(`No ${ext} image found for ${nombre}`);
                 }
             }
-            console.log(`No image found for ${nombre}`);
+            //console.log(`No image found for ${nombre}`);
         };
 
         fetchImage();

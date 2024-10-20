@@ -13,7 +13,7 @@ export const fetchCategorias = async (db) => {
                 }));
                 return categoriasFormatted;
             } else {
-                console.log("No categories found!");
+                //console.log("No categories found!");
             }
         }
     } catch (error) {

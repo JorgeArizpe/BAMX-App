@@ -82,7 +82,7 @@ export default function SignUp({ navigation }: any) {
                                                 entradaSalida: true,
                                                 admin: false,
                                             });
-                                            console.log('Usuario creado con éxito');
+                                            //console.log('Usuario creado con éxito');
                                             navigation.navigate('MainMenu');
                                         }
                                     })
